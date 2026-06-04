@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kolo - Thesis monitoring for investors</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-main:#F8F8F3;--bg-soft:#F2F3EC;--bg-card:#FCFCF8;--bg-card-warm:#FFFDF6;
+  --text-primary:#171717;--text-secondary:#666660;--text-muted:#94948D;--text-faint:rgba(23,23,23,0.12);
+  --green:#B8D86A;--green-dark:#526F2B;--green-soft:rgba(184,216,106,0.18);--green-line:rgba(82,111,43,0.22);
+  --amber:#D7A64F;--red:#D95C53;--blue-soft:#5D8BFF;--purple-soft:#8B6BFF;
+  --border-soft:rgba(23,23,23,0.08);--border-green:rgba(82,111,43,0.28);
+  --shadow-card:0 18px 50px rgba(20,25,15,0.08);--shadow-hover:0 28px 70px rgba(20,25,15,0.13);
+  --ease:cubic-bezier(0.22,1,0.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg-main);color:var(--text-primary);overflow-x:hidden;font-size:15px;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.014;pointer-events:none;z-index:9999}
+
+/* TYPOGRAPHY */
+.eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--green-dark);font-weight:650}
+.accent{font-family:'Instrument Serif',serif;font-style:italic;color:var(--green-dark);letter-spacing:-.03em}
+
+/* BUTTONS */
+.btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#151711;border-radius:999px;padding:13px 22px;font-weight:600;font-size:14px;border:1px solid rgba(82,111,43,.18);box-shadow:0 10px 30px rgba(184,216,106,.25);cursor:pointer;text-decoration:none;transition:transform .2s var(--ease),box-shadow .2s var(--ease);font-family:inherit;white-space:nowrap}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(184,216,106,.38)}
+.btn-p .arr{display:inline-block;transition:transform .2s var(--ease)}
+.btn-p:hover .arr{transform:translateX(3px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text-primary);border-radius:999px;padding:13px 20px;font-weight:500;font-size:14px;border:1px solid var(--border-soft);cursor:pointer;text-decoration:none;transition:border-color .2s,background .2s;font-family:inherit}
+.btn-ghost:hover{border-color:rgba(23,23,23,.2);background:rgba(23,23,23,.03)}
+
+/* CARDS */
+.card{background:rgba(252,252,248,.9);border:1px solid var(--border-soft);border-radius:20px;box-shadow:var(--shadow-card);backdrop-filter:blur(14px);transition:transform .35s var(--ease),border-color .25s,box-shadow .35s var(--ease)}
+.card:hover{transform:translateY(-6px);border-color:var(--border-green);box-shadow:var(--shadow-hover)}
+
+/* HEADER */
+header{position:fixed;top:0;left:0;right:0;z-index:100;height:66px;display:flex;align-items:center;padding:0 clamp(20px,4vw,60px);transition:background .35s,border-color .35s,backdrop-filter .35s}
+header.scrolled{background:rgba(248,248,243,.84);backdrop-filter:blur(20px);border-bottom:1px solid rgba(23,23,23,.06)}
+.h-logo{font-size:18px;font-weight:600;letter-spacing:-.04em;color:var(--text-primary);text-decoration:none;flex-shrink:0}
+nav{display:flex;gap:26px;margin:0 auto}
+nav a{font-size:13.5px;color:var(--text-secondary);text-decoration:none;font-weight:400;position:relative;padding-bottom:2px;transition:color .2s}
+nav a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--green-dark);transition:width .25s var(--ease)}
+nav a:hover{color:var(--text-primary)}
+nav a:hover::after{width:100%}
+.h-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.h-login{font-size:13.5px;color:var(--text-secondary);text-decoration:none;transition:color .2s}
+.h-login:hover{color:var(--text-primary)}
+
+/* HERO */
+#hero{padding:clamp(90px,10vh,120px) clamp(20px,4vw,72px) 80px;max-width:1440px;margin:0 auto;display:grid;grid-template-columns:1fr 1.05fr;gap:40px;align-items:center;min-height:100vh;position:relative;background:radial-gradient(circle at 74% 28%,rgba(184,216,106,.13),transparent 34%),radial-gradient(circle at 14% 78%,rgba(82,111,43,.055),transparent 30%)}
+.hero-eyebrow{margin-bottom:18px;opacity:0;animation:rup .6s var(--ease) .1s forwards}
+.hero-title{font-size:clamp(44px,5.5vw,82px);line-height:.96;letter-spacing:-.055em;font-weight:500;margin-bottom:22px;opacity:0;animation:rup .65s var(--ease) .2s forwards}
+.hero-does{position:relative;display:inline-block;color:var(--green-dark);padding-bottom:.08em}
+.hero-does svg{position:absolute;left:-3%;right:-3%;bottom:-.11em;width:106%;height:.28em;overflow:visible;filter:drop-shadow(0 0 7px rgba(184,216,106,.34));pointer-events:none}
+.hero-does path{stroke-dasharray:220;stroke-dashoffset:220;animation:squiggleDraw .82s cubic-bezier(.22,1,.36,1) 1.05s forwards}
+.hero-sub{font-size:16px;color:var(--text-secondary);line-height:1.65;max-width:430px;margin-bottom:30px;opacity:0;animation:rup .65s var(--ease) .3s forwards}
+.hero-ctas{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:28px;opacity:0;animation:rup .65s var(--ease) .4s forwards}
+.hero-trust{display:flex;align-items:center;gap:12px;opacity:0;animation:rup .65s var(--ease) .5s forwards}
+.avatars{display:flex;align-items:center}
+.avatars span{width:76px;height:76px;border-radius:50%;border:3px solid var(--bg-main);overflow:hidden;margin-left:-22px;background:var(--bg-soft);box-shadow:0 14px 32px rgba(20,25,15,.16)}
+.avatars span:first-child{margin-left:0}
+.avatars span img{width:100%;height:100%;object-fit:cover}
+.hero-trust p{font-size:12.5px;color:var(--text-muted)}
+
+/* HERO CLUSTER */
+.hero-right{position:relative;height:580px;opacity:0;animation:rup .8s var(--ease) .3s forwards}
+
+/* Main card */
+.main-porsche{position:absolute;top:calc(50% - 70px);left:calc(50% - 20px);transform:translate(-50%,-52%);width:260px;z-index:5;animation:floatMain 8s ease-in-out infinite}
+.main-porsche .card-inner{padding:18px}
+.card-week-tag{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.card-week-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);display:block;animation:pulse 4s ease-in-out infinite}
+.company-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.co-logo-wrap{width:48px;height:48px;border-radius:12px;overflow:hidden;flex-shrink:0;border:1px solid var(--border-soft)}
+.co-logo-wrap.porsche{background:#fff;display:flex;align-items:center;justify-content:center}
+.co-name{font-size:18px;font-weight:600;letter-spacing:-.03em}
+
+/* Porsche car image placeholder */
+.porsche-img{width:100%;height:130px;border-radius:10px;margin-bottom:14px;overflow:hidden;position:relative}
+
+.thesis-label-sm{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px}
+.thesis-val{font-size:16px;font-weight:700;color:var(--green-dark);letter-spacing:-.02em;margin-bottom:10px}
+.thesis-reasons{display:grid;gap:5px;margin:10px 0 12px;padding:9px 10px;background:rgba(82,111,43,.055);border:1px solid rgba(82,111,43,.12);border-radius:9px}
+.reason-row{display:flex;align-items:center;gap:7px;font-size:10.5px;color:var(--text-secondary);line-height:1.35}
+.reason-row::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(184,216,106,.16);flex-shrink:0}
+.conf-row{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-muted);margin-bottom:5px}
+.conf-num{font-weight:700;color:var(--text-primary);font-size:13px}
+.conf-bar{height:3px;background:var(--bg-soft);border-radius:2px;overflow:hidden;margin-bottom:14px}
+.conf-fill{height:100%;background:var(--green);border-radius:2px;width:0;transition:width 1.8s var(--ease) 1s}
+.card-footer-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-muted)}
+.arr-circle{width:22px;height:22px;border-radius:50%;border:1px solid var(--border-soft);display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;transition:border-color .2s,transform .2s}
+.card:hover .arr-circle{border-color:var(--green-dark);transform:translateX(2px)}
+
+/* Side cards */
+.sc{position:absolute;width:150px}
+.sc .card-inner{padding:13px 15px}
+.sc-tag{font-size:8px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.sc-tag.rev{color:var(--amber)}.sc-tag.brk{color:var(--blue-soft)}.sc-tag.nb{color:var(--green-dark)}.sc-tag.alt{color:var(--text-muted)}
+.sc-co{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.sc-logo{width:42px;height:42px;border-radius:9px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.sc-logo.figma{background:transparent;color:var(--text-primary)}
+.sc-logo.atl{background:transparent;color:var(--text-primary)}
+.sc-logo.pors{background:transparent;color:var(--text-primary)}
+.sc-name{font-size:12px;font-weight:600;letter-spacing:-.02em}
+.sc-body{font-size:11px;color:var(--text-secondary);line-height:1.4}
+.sc-photo{width:100%;height:110px;border-radius:7px;overflow:hidden;margin-bottom:8px}
+
+.sc-figma{top:18%;left:-10%;animation:fs1 10s ease-in-out infinite}
+.sc-atl{top:calc(60% - 40px);left:-6%;animation:fs2 8.5s ease-in-out infinite}
+.sc-newbrief{top:8%;right:-2%;animation:fs3 12s ease-in-out infinite;width:175px}
+.sc-alert{top:56%;right:0%;animation:fs4 9.5s ease-in-out infinite}
+
+/* Portfolio */
+.portfolio{position:absolute;bottom:calc(5% + 15px);right:2%;width:160px;z-index:4;animation:fs2 11s ease-in-out 1s infinite}
+.portfolio .card-inner{padding:14px 16px}
+.port-tag{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);font-weight:600;margin-bottom:9px}
+.port-body{display:flex;justify-content:space-between;align-items:center}
+.port-text{font-size:11px;color:var(--text-secondary);line-height:1.5}
+.port-text strong{font-size:14px;font-weight:600;color:var(--text-primary);display:block;letter-spacing:-.02em}
+.port-ring{width:54px;height:54px}
+
+/* Market pill */
+.mkt-pill{position:absolute;bottom:13%;left:-50px;background:rgba(252,252,248,.92);border:1px solid var(--border-soft);border-radius:999px;padding:9px 16px;display:flex;align-items:center;gap:9px;font-size:12px;color:var(--text-secondary);box-shadow:var(--shadow-card);animation:fs1 7s ease-in-out infinite;z-index:4}
+.mkt-pill strong{color:var(--text-primary);font-weight:600}
+
+/* KEYFRAMES */
+@keyframes rup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes floatMain{0%,100%{transform:translate(-50%,-52%) translateY(0)}50%{transform:translate(-50%,-52%) translateY(-7px)}}
+@keyframes fs1{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes fs2{0%,100%{transform:translateY(-3px)}50%{transform:translateY(4px)}}
+@keyframes fs3{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes fs4{0%,100%{transform:translateY(2px)}50%{transform:translateY(-4px)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(184,216,106,.5)}70%{box-shadow:0 0 0 8px rgba(184,216,106,0)}100%{box-shadow:0 0 0 0 rgba(184,216,106,0)}}
+@keyframes driftL{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes drawLine{from{width:0}to{width:var(--target-w,75%)}}
+@keyframes dotBounce{0%,100%{transform:translateY(0) scale(1)}40%{transform:translateY(-14px) scale(1.2)}70%{transform:translateY(-4px) scale(1.1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleWord{from{transform:scale(1)}to{transform:scale(1.08)}}
+@keyframes waveIn{from{stroke-dashoffset:800}to{stroke-dashoffset:0}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(184,216,106,.3)}50%{box-shadow:0 0 20px 4px rgba(184,216,106,.4)}}
+
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+.kolo-home-link{position:fixed;right:18px;bottom:18px;z-index:10000;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:999px;border:1px solid rgba(82,111,43,.34);background:rgba(248,248,243,.72);color:var(--green-dark);text-decoration:none;box-shadow:0 18px 46px rgba(20,25,15,.16);backdrop-filter:blur(16px);transition:transform .2s var(--ease),border-color .2s,background .2s}
+.kolo-home-link svg{width:19px;height:19px;stroke:currentColor}
+.kolo-home-link:hover{transform:translateY(-2px);border-color:rgba(82,111,43,.62);background:rgba(248,248,243,.9)}
+@media(max-width:560px){.kolo-home-link{right:12px;bottom:12px;width:42px;height:42px}}
+
+/* SECTIONS */
+section{border-top:1px solid rgba(23,23,23,.06)}
+#three-jobs{background:#F5F7EE}
+#signal{background:#FAFAF5}
+#orbit{background:#F3F4EC}
+#sample-brief{background:#FDFCF7}
+.si{max-width:1440px;margin:0 auto;padding:clamp(60px,7vw,110px) clamp(20px,4vw,72px)}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.rv.vis{opacity:1;transform:translateY(0)}
+.rv.d1{transition-delay:.07s}.rv.d2{transition-delay:.14s}.rv.d3{transition-delay:.21s}.rv.d4{transition-delay:.28s}
+.grow-word{display:inline-block;margin-left:.08em;transform-origin:50% 70%;will-change:transform}
+.hero-title .grow-word{animation:wordBloom .9s var(--ease) .48s both}
+.vis .grow-word{animation:wordBloom .82s var(--ease) .08s both}
+@keyframes wordBloom{0%{transform:scale(.985);filter:blur(.35px)}100%{transform:scale(1.045);filter:blur(0)}}
+
+/* ── TICKER BANNER ── */
+#ticker{background:var(--green-dark);padding:0;overflow:hidden;height:44px;display:flex;align-items:center;border-top:1px solid rgba(82,111,43,.2)}
+.ticker-track{display:flex;gap:0;white-space:nowrap;animation:driftL 18s linear infinite;will-change:transform}
+.ticker-track:hover{animation-play-state:paused}
+.tick-item{display:inline-flex;align-items:center;gap:10px;padding:0 32px;font-size:12px;font-weight:500;color:rgba(248,248,243,.75);letter-spacing:.06em;text-transform:uppercase}
+.tick-item span{color:rgba(248,248,243,.4);font-size:9px}
+.tick-dot{width:4px;height:4px;border-radius:50%;background:var(--green);flex-shrink:0}
+
+/* ── BIG CAROUSEL SECTION ── */
+#big-carousel{position:relative;overflow:hidden;background:var(--bg-soft);min-height:72vh;display:flex;align-items:center}
+.carousel-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.drift-row{white-space:nowrap;line-height:1;font-size:clamp(80px,12vw,160px);font-weight:500;letter-spacing:-.07em;color:rgba(23,23,23,0.18);will-change:transform;opacity:1}
+.drift-row.l{animation:driftL 18.2s linear infinite}
+.carousel-inner{position:relative;z-index:2;max-width:1440px;margin:0 auto;padding:clamp(50px,7vw,90px) clamp(20px,4vw,72px);display:grid;grid-template-columns:260px 1fr;gap:64px;align-items:start}
+.car-side p{font-size:14px;color:var(--text-secondary);line-height:1.7;margin-top:14px}
+.car-headline{font-size:clamp(44px,6vw,82px);font-weight:500;letter-spacing:-.055em;line-height:1.0;margin-bottom:44px}
+.car-side::after{content:'';display:block;width:72px;height:1px;background:linear-gradient(90deg,var(--green-dark),transparent);opacity:.34;margin-top:22px}
+
+/* TIMELINE */
+.tl-wrap{position:relative}
+.tl-rail{position:relative;height:2px;background:rgba(23,23,23,.1);border-radius:2px;margin-bottom:0}
+.tl-fill{position:absolute;top:0;left:0;height:100%;background:var(--green);border-radius:2px;width:0%;transition:width 2s var(--ease)}
+.tl-dots-row{position:absolute;top:50%;left:0;right:0;display:flex;justify-content:space-between;transform:translateY(-50%)}
+.tl-d{width:9px;height:9px;border-radius:50%;background:rgba(23,23,23,.14);border:2px solid var(--bg-soft);position:relative;transition:background .3s,transform .3s,box-shadow .3s;cursor:pointer}
+.tl-d.passed{background:var(--green)}
+.tl-d.active{background:var(--green);transform:scale(1.8);box-shadow:0 0 0 5px rgba(184,216,106,.28)}
+/* travelling dog */
+.tl-dog{position:absolute;top:50%;width:16px;height:16px;background:var(--green);border:2px solid #fff;border-radius:50%;transform:translate(-50%,-50%);z-index:10;box-shadow:0 2px 8px rgba(184,216,106,.5);transition:left .6s var(--ease);display:flex;align-items:center;justify-content:center;font-size:8px}
+.tl-labels{display:flex;justify-content:space-between;margin-top:14px}
+.tl-lbl{font-size:10.5px;color:var(--text-muted);text-align:center;flex:1;transition:color .3s,font-weight .3s}
+.tl-lbl.active{color:var(--green-dark);font-weight:700}
+.tl-chip{display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:9px 18px;background:var(--bg-card);border:1px solid var(--border-soft);border-radius:999px;font-size:12.5px;color:var(--text-secondary);box-shadow:var(--shadow-card)}
+.tl-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 3s infinite}
+
+/* ── SCROLL TEXT WALL ── */
+#text-wall{background:var(--green-dark);overflow:hidden;padding:0;position:relative}
+.tw-track-wrap{padding:clamp(54px,7vw,96px) 0;display:flex;flex-direction:column;gap:0}
+.tw-row{display:flex;width:max-content;white-space:nowrap;font-size:clamp(62px,10.6vw,146px);font-weight:480;letter-spacing:-.04em;word-spacing:.05em;line-height:.9;color:rgba(255,255,255,.26);will-change:transform;transition:color .4s}
+.tw-row.l{animation:driftL 18.2s linear infinite}
+.tw-unit{display:inline-flex;align-items:center;white-space:nowrap;padding-right:.36em}
+.tw-row .kw{transition:color .3s,transform .3s;display:inline-block;font-weight:760;letter-spacing:-.055em;color:rgba(255,255,255,.62)}
+.tw-row .kw.lit{color:rgba(255,255,255,1);transform:scale(1.035)}
+
+/* ── THREE JOBS ── */
+#three-jobs .si{display:grid;grid-template-columns:1fr 1.75fr;gap:56px;align-items:start}
+.jobs-l .eyebrow{margin-bottom:16px}
+.jobs-title{font-size:clamp(38px,4.5vw,60px);font-weight:500;letter-spacing:-.05em;line-height:1.03;margin-bottom:14px}
+.jobs-r{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+.job-card{padding:22px;position:relative}
+.job-card::before{content:'';position:absolute;top:0;left:22px;right:22px;height:1px;background:linear-gradient(90deg,transparent,var(--green-line),transparent);opacity:0;transition:opacity .35s var(--ease)}
+.job-card:hover::before,.job-card.vis::before{opacity:1}
+.job-card:nth-child(2){margin-top:26px}
+.job-card:nth-child(3){margin-top:-8px;transform:rotate(.5deg)}
+.job-card:hover{transform:translateY(-6px)!important}
+.job-num{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:.1em;margin-bottom:14px}
+.job-icon{width:42px;height:42px;margin-bottom:14px;color:var(--green-dark)}
+.job-title{font-size:14.5px;font-weight:600;letter-spacing:-.02em;margin-bottom:3px}
+.job-sub{font-size:11.5px;color:var(--green-dark);font-weight:600;margin-bottom:10px}
+.job-body{font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px}
+.job-arr{width:26px;height:26px;border-radius:50%;border:1px solid var(--border-soft);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-muted);cursor:pointer;transition:border-color .2s,transform .2s}
+.job-card:hover .job-arr{border-color:var(--green-dark);transform:translateX(2px)}
+
+/* ── SIGNAL ── */
+#signal .si{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:44px;align-items:center}
+.sig-left h2{font-size:clamp(22px,2.8vw,36px);font-weight:500;letter-spacing:-.04em;line-height:1.1;margin-bottom:18px}
+.sig-left p{font-size:13.5px;color:var(--text-secondary);line-height:1.7}
+.noise-cloud{position:relative;height:300px}
+.np{position:absolute;background:var(--bg-card);border:1px solid var(--border-soft);border-radius:999px;padding:5px 11px;font-size:10.5px;font-weight:500;color:var(--text-secondary);box-shadow:0 3px 10px rgba(20,25,15,.06)}
+.sig-arrow{position:absolute;right:-16px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;color:#151711;box-shadow:0 6px 20px rgba(184,216,106,.45);z-index:10;font-size:13px;animation:glowPulse 3s ease-in-out infinite}
+.out-card{padding:22px}
+.out-title{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--green-dark);font-weight:700;margin-bottom:16px}
+.out-item{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid rgba(23,23,23,.05)}
+.out-item:last-child{border-bottom:none}
+.out-check{width:18px;height:18px;border-radius:50%;background:var(--green-soft);border:1px solid var(--border-green);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:8px;color:var(--green-dark)}
+.out-lbl{font-size:12.5px;font-weight:600;letter-spacing:-.01em;margin-bottom:2px}
+.out-desc{font-size:11px;color:var(--text-muted)}
+
+/* ── ORBIT ── */
+#orbit .si{display:grid;grid-template-columns:.95fr 1.38fr 1.05fr;gap:54px;align-items:center}
+.orbit-l .eyebrow{margin-bottom:14px}
+.orbit-l h2{font-size:clamp(30px,3.5vw,52px);font-weight:500;letter-spacing:-.045em;line-height:1.02;margin-bottom:14px}
+.orbit-l p{font-size:13.5px;color:var(--text-secondary);line-height:1.65}
+.orbit-diagram{position:relative;width:min(350px,86vw);height:min(350px,86vw);margin:0 auto 40px}
+.orbit-ring-el{position:absolute;border:1.5px solid var(--border-green);border-radius:50%;animation:orbitDrift 20s ease-in-out infinite alternate}
+.orbit-ring-el:nth-child(1){inset:0;opacity:.45}
+.orbit-ring-el:nth-child(2){inset:22px;opacity:.25;animation-delay:-8s}
+@keyframes orbitDrift{from{transform:rotate(-2.5deg)}to{transform:rotate(2.5deg)}}
+.orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:112px;height:112px;border-radius:50%;background:var(--bg-card);border:1.5px solid var(--border-green);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 34px rgba(184,216,106,.18),var(--shadow-card);z-index:5;cursor:pointer}
+.orbit-co-logo{width:52px;height:52px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:4px;overflow:hidden}
+.orbit-cn{font-size:10.5px;font-weight:700;letter-spacing:-.01em}
+.orbit-cs{font-size:7.5px;color:var(--green-dark);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.orbit-cp{font-size:10px;font-weight:600;color:var(--text-primary);margin-top:1px}
+.orbit-node{position:absolute;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:opacity .35s}
+.orbit-dot{width:36px;height:36px;border-radius:50%;background:var(--bg-card);border:1.5px solid var(--border-soft);display:flex;align-items:center;justify-content:center;font-size:13px;transition:border-color .35s,transform .35s,box-shadow .35s}
+.orbit-dot svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;color:rgba(82,111,43,.64)}
+.orbit-lbl{font-size:9.5px;color:var(--text-muted);font-weight:500;white-space:nowrap;transition:color .35s}
+.orbit-node.active .orbit-dot{border-color:var(--green);transform:scale(1.15);box-shadow:0 0 0 5px var(--green-soft),0 10px 24px rgba(82,111,43,.14)}
+.orbit-node.active .orbit-lbl{color:var(--green-dark);font-weight:700}
+.orbit-node.dim{opacity:.4}
+.orbit-caption{margin-top:4px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border-soft);border-radius:10px;font-size:12px;color:var(--text-secondary);box-shadow:0 4px 12px rgba(20,25,15,.05);text-align:center;min-height:44px;max-width:330px;transition:opacity .25s,transform .25s}
+/* connector lines */
+.orbit-line{position:absolute;top:50%;left:50%;transform-origin:0 0;height:1.5px;background:var(--border-green);transition:background .35s,opacity .35s;opacity:.5;pointer-events:none;z-index:1}
+.orbit-node.active ~ .orbit-line,.orbit-line.active{background:var(--green);opacity:1}
+
+/* TRACK RECORD */
+.track-card{padding:22px}
+.track-ttl{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:18px}
+.track-row{padding:11px 6px;border-bottom:1px solid rgba(23,23,23,.05);cursor:pointer;border-radius:6px;transition:background .2s}
+.track-row:last-child{border-bottom:none}
+.track-row:hover{background:rgba(23,23,23,.025)}
+.track-logo-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.track-logo{width:36px;height:36px;border-radius:7px;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.track-logo.figma-l{background:transparent;color:var(--text-primary)}
+.track-logo.atl-l{background:transparent;color:var(--text-primary)}
+.track-logo.shop-l{background:transparent;color:var(--text-primary)}
+.track-date{font-size:10px;color:var(--text-muted);font-weight:500;letter-spacing:.03em}
+.track-top{display:flex;justify-content:space-between;align-items:center}
+.track-desc{font-size:12px;color:var(--text-secondary)}
+.track-pct{font-size:15px;font-weight:700;color:var(--green-dark);letter-spacing:-.02em}
+
+/* ── SAMPLE BRIEF ── */
+#sample-brief .si{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.brief-card{padding:26px;position:relative;overflow:hidden}
+.brief-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover)}
+.brief-scan{position:absolute;top:0;left:-100%;width:70%;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.brief-card:hover .brief-scan{animation:scanAnim .6s ease-out forwards}
+@keyframes scanAnim{from{left:-80%;opacity:.9}to{left:110%;opacity:0}}
+.brief-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+.brief-co{display:flex;align-items:center;gap:12px}
+.brief-co-img{width:60px;height:60px;border-radius:14px;overflow:hidden;flex-shrink:0;border:1px solid var(--border-soft)}
+.brief-co-img.pors-lg{background:#fff;display:flex;align-items:center;justify-content:center}
+.brief-co-name{font-size:20px;font-weight:600;letter-spacing:-.03em}
+.brief-badge{background:var(--green-soft);border:1px solid var(--border-green);border-radius:999px;padding:5px 12px;font-size:9.5px;font-weight:700;color:var(--green-dark);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.brief-body{font-size:14px;line-height:1.75;color:var(--text-secondary);padding:16px 18px;background:var(--bg-soft);border-radius:10px;border-left:2.5px solid var(--green);margin-bottom:22px}
+.brief-foot{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text-muted);letter-spacing:.05em}
+.brief-arr{width:28px;height:28px;border-radius:50%;border:1px solid var(--border-soft);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-muted);cursor:pointer;transition:border-color .2s,transform .2s}
+.brief-card:hover .brief-arr{border-color:var(--green-dark);transform:translateX(2px)}
+
+/* Locked preview */
+.locked-wrap{position:relative;border-radius:20px;overflow:hidden}
+.locked-blur{padding:26px;filter:blur(5px);pointer-events:none;user-select:none;border:1px solid var(--border-soft);border-radius:20px;background:rgba(252,252,248,.9)}
+.locked-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(248,248,243,.55);backdrop-filter:blur(6px);border-radius:20px;border:1px solid var(--border-soft)}
+.locked-overlay p{font-size:13px;color:var(--text-secondary);text-align:center;max-width:200px;line-height:1.5}
+
+/* ── FINAL CTA ── */
+#final-cta{background:var(--bg-soft);position:relative;overflow:hidden}
+#final-cta .si{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center}
+.cta-hl{font-size:clamp(44px,6vw,84px);font-weight:500;letter-spacing:-.055em;line-height:.98;margin-bottom:16px;position:relative;display:inline-block}
+.cta-sub{font-size:15px;color:var(--text-secondary);max-width:400px;line-height:1.65}
+.cta-r{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.sparkle{position:absolute;display:inline-block;color:var(--green);animation:sparkPop 2.5s ease-in-out infinite}
+@keyframes sparkPop{0%,100%{opacity:.5;transform:scale(1) rotate(0deg)}50%{opacity:1;transform:scale(1.35) rotate(20deg)}}
+.cta-wave{position:absolute;bottom:0;right:0;width:440px;height:220px;pointer-events:none;opacity:.14}
+.cta-wave path{stroke-dasharray:800;stroke-dashoffset:800;animation:waveIn 2s var(--ease) .5s forwards}
+
+/* FOOTER */
+footer{border-top:1px solid rgba(23,23,23,.06);padding:30px clamp(20px,4vw,72px);text-align:center}
+footer p{font-size:12px;color:var(--text-muted);line-height:1.9}
+.foot-icon{display:inline-block;margin-bottom:10px;opacity:.35}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  #hero{grid-template-columns:1fr;padding-top:90px;min-height:auto}
+  .hero-right{height:540px;margin-top:30px}
+  .main-porsche{top:50%;left:50%;width:250px}
+  .sc-newbrief{right:2%;top:2%}
+  .portfolio{bottom:28px}
+  nav{display:none}
+  #three-jobs .si,#signal .si,#orbit .si,#sample-brief .si,#final-cta .si{grid-template-columns:1fr}
+  .footer-sample-grid{grid-template-columns:1fr!important;gap:24px!important}
+  .footer-sample-card{min-height:auto!important}
+  .jobs-r{grid-template-columns:1fr}
+  .job-card:nth-child(2){margin-top:0}.job-card:nth-child(3){margin-top:0;transform:none}
+  .cta-r{align-items:flex-start}
+  .carousel-inner{grid-template-columns:1fr}
+  .car-side{display:none}
+}
+
+/* ── DESIGN ELEMENTS ── */
+.deco-squiggle{position:absolute;pointer-events:none;opacity:0;animation:squiggleIn .8s var(--ease) forwards}
+@keyframes squiggleIn{to{opacity:1}}
+.deco-ring{position:absolute;border-radius:50%;border:1px solid var(--border-green);pointer-events:none;animation:ringExpand 3s ease-out forwards}
+@keyframes ringExpand{from{transform:scale(0.6);opacity:0}to{transform:scale(1);opacity:0.35}}
+.deco-dot{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--green);pointer-events:none;animation:dotFade 4s ease-in-out infinite}
+@keyframes dotFade{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.8;transform:scale(1.5)}}
+.deco-line{position:absolute;pointer-events:none;opacity:0.12}
+
+/* Floating green pill accent */
+.accent-pill{position:absolute;background:var(--green-soft);border:1px solid var(--border-green);border-radius:999px;pointer-events:none;opacity:0;animation:pillfade 1s var(--ease) .6s forwards}
+@keyframes pillfade{to{opacity:1}}
+
+/* Section squiggle underlines on headings */
+.squiggle-under{position:relative;display:inline-block}
+.squiggle-under::after{
+  content:'';position:absolute;left:0;bottom:-6px;width:100%;height:8px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8'%3E%3Cpath d='M0 4 Q12.5 0 25 4 Q37.5 8 50 4 Q62.5 0 75 4 Q87.5 8 100 4' stroke='%23B8D86A' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size:100% 100%;opacity:0;
+  transition:opacity .4s .2s;
+}
+.vis .squiggle-under::after{opacity:0.7}
+
+/* Grain overlay on green section */
+#text-wall::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.04;pointer-events:none;z-index:0}
+#text-wall .tw-track-wrap{position:relative;z-index:1}
+
+/* Animated green corner accent */
+.corner-accent{position:absolute;pointer-events:none}
+.corner-accent svg path{stroke-dasharray:200;stroke-dashoffset:200;animation:drawCorner 1.2s var(--ease) .5s forwards}
+@keyframes drawCorner{to{stroke-dashoffset:0}}
+
+/* Animated gradient border on main porsche card */
+.main-porsche .card{transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .25s}
+.main-porsche .card::before{content:'';position:absolute;inset:-1px;border-radius:21px;background:linear-gradient(135deg,var(--green),transparent,var(--green-dark));opacity:0;transition:opacity .4s;pointer-events:none;z-index:-1}
+.main-porsche:hover .card::before{opacity:.6}
+
+/* Ticker item hover glow */
+.tick-item:hover .tick-dot{box-shadow:0 0 8px var(--green);transform:scale(1.4)}
+.tick-dot{transition:transform .2s,box-shadow .2s}
+
+/* Squiggle animation for homepage hero */
+@keyframes squiggleDraw{from{stroke-dashoffset:200}to{stroke-dashoffset:0}}
+
+/* Green section pulse ring */
+.pulse-ring{position:absolute;border-radius:50%;border:1px solid var(--green);animation:ringPulse 4s ease-out infinite;pointer-events:none}
+@keyframes ringPulse{0%{transform:scale(.8);opacity:.6}100%{transform:scale(2.2);opacity:0}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="hdr">
+  <a href="#" class="h-logo">kol<span style="color:var(--green-dark);">o</span></a>
+  <nav>
+    <a href="#">Briefings <span style="font-size:9px;opacity:.5;">▾</span></a>
+    <a href="#">Watchlists</a>
+    <a href="#">Method</a>
+    <a href="#">Sample Brief</a>
+    <a href="#">Pricing</a>
+    <a href="#">About</a>
+  </nav>
+  <div class="h-right">
+    <a href="#" class="btn-p" style="font-size:13px;padding:10px 18px;">Request Access</a>
+    <a href="#" class="h-login">Log in</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="hero" style="border-top:none;">
+  <div>
+    <div class="hero-eyebrow eyebrow">Thesis monitoring for public-market investors</div>
+    <h1 class="hero-title">Know when your<br><span class="grow-word">thesis</span> needs<br>another <span class="hero-does">look.<svg viewBox="0 0 130 18" aria-hidden="true"><path d="M3 11 C19 3 31 17 47 9 S77 5 92 10 S113 18 127 7" fill="none" stroke="#B8D86A" stroke-width="3.2" stroke-linecap="round"/></svg></span></h1>
+    <p class="hero-sub">Kolo watches the stocks you own for changes in guidance, demand, margins, management, narrative, and valuation. When the case moves, you get the brief.</p>
+    <div class="hero-ctas">
+      <a href="#" class="btn-p">Read a sample brief</a>
+      <a href="#" class="btn-ghost">How Kolo works ▷ </a>
+    </div>
+    <div class="hero-trust">
+      <div class="avatars">
+        <span><img src="assets/investor-avatar-01.webp" alt="Investor member"/></span>
+        <span><img src="assets/investor-avatar-02.webp" alt="Investor member"/></span>
+        <span><img src="assets/investor-avatar-03.webp" alt="Investor member"/></span>
+        <span><img src="assets/investor-avatar-04.webp" alt="Investor member"/></span>
+      </div>
+      <p>Used by investors tracking theses across 85+ countries</p>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <!-- MAIN PORSCHE CARD -->
+    <div class="card main-porsche" id="mainCard">
+      <div class="card-inner">
+        <div class="card-week-tag">This Week</div>
+        <div class="company-header">
+          <div class="co-logo-wrap porsche">
+            <img src="assets/porsche-crest.webp" style="width:100%;height:100%;object-fit:contain;padding:3px;" alt="Porsche"/>
+          </div>
+          <span class="co-name">Porsche</span>
+        </div>
+        <div class="porsche-img">
+          <img src="assets/porsche-911-green.webp" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" alt="Porsche 911"/>
+        </div>
+        <div>
+          <div class="thesis-label-sm">Thesis status</div>
+          <div class="thesis-val">INTACT</div>
+        </div>
+        <div class="thesis-reasons">
+          <div class="reason-row">CEO shift changes the turnaround path</div>
+          <div class="reason-row">EV losses appear priced into the case</div>
+          <div class="reason-row">Focus is on hybrids</div>
+        </div>
+        <div class="conf-row">
+          <span>Case strength</span>
+          <span class="conf-num" id="confVal">0%</span>
+        </div>
+        <div class="conf-bar"><div class="conf-fill" id="confFill"></div></div>
+        <div class="card-footer-row">
+          <span>12 min brief</span>
+          <div class="arr-circle">→</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FIGMA CARD -->
+    <div class="card sc sc-figma">
+      <div class="card-inner">
+        <div class="sc-tag rev">Reversal</div>
+        <div class="sc-co">
+          <div class="sc-logo figma" style="background:transparent;padding:1px;"><img src="assets/figma-logo.webp" style="width:100%;height:100%;object-fit:contain;" alt="Figma"/></div>
+          <span class="sc-name">Figma</span>
+        </div>
+        <div class="sc-body">Revenue acceleration<br>+3rd quarter</div>
+      </div>
+    </div>
+
+    <!-- ATLASSIAN CARD -->
+    <div class="card sc sc-atl">
+      <div class="card-inner">
+        <div class="sc-tag brk">Breakout</div>
+        <div class="sc-co">
+          <div class="sc-logo atl" style="background:transparent;padding:1px;"><img src="assets/atlassian-logo.webp" style="width:100%;height:100%;object-fit:contain;" alt="Atlassian"/></div>
+          <span class="sc-name">Atlassian</span>
+        </div>
+        <div class="sc-body">Rovo ARR growing 2x</div>
+      </div>
+    </div>
+
+    <!-- NEW BRIEF CARD (with Ferrari exec photo) -->
+    <div class="card sc sc-newbrief">
+      <div class="card-inner">
+        <div class="sc-tag nb">New Brief</div>
+        <div class="sc-photo">
+          <img src="assets/executive-headshot.webp" style="width:100%;height:100%;object-fit:cover;border-radius:7px;object-position:center 5%;" alt="Porsche has appointed ex-McLaren boss Michael Leiters as the next CEO who shifts focus Back to Hybrids"/>
+        </div>
+        <div class="sc-co">
+          <div class="sc-logo pors" style="background:#fff;padding:1px;"><img src="assets/porsche-crest.webp" style="width:100%;height:100%;object-fit:contain;" alt="Porsche"/></div>
+          <span class="sc-name">Porsche</span>
+        </div>
+        <div class="sc-body">Porsche has appointed ex-McLaren boss Michael Leiters as the next CEO</div>
+      </div>
+    </div>
+
+    <!-- ALERT CARD -->
+    <div class="card sc sc-alert">
+      <div class="card-inner">
+        <div class="sc-tag alt">Alert</div>
+        <div class="sc-body" style="margin-top:4px;font-size:12px;color:var(--text-muted);">Nothing important<br>changed.</div>
+      </div>
+    </div>
+
+    <!-- PORTFOLIO CARD -->
+    <div class="card portfolio">
+      <div class="card-inner">
+        <div class="port-tag">Your Portfolio</div>
+        <div class="port-body">
+          <div class="port-text">
+            <strong>4 holdings</strong>
+            All theses still intact
+          </div>
+          <svg class="port-ring" viewBox="0 0 54 54">
+            <circle cx="27" cy="27" r="21" fill="none" stroke="rgba(23,23,23,.08)" stroke-width="4"/>
+            <circle id="portRing" cx="27" cy="27" r="21" fill="none" stroke="#B8D86A" stroke-width="4"
+              stroke-dasharray="131.9" stroke-dashoffset="131.9"
+              stroke-linecap="round" transform="rotate(-90 27 27)"
+              style="transition:stroke-dashoffset 2.2s cubic-bezier(0.22,1,0.36,1) 1.2s"/>
+            <text x="27" y="31" text-anchor="middle" font-size="10" font-weight="700" fill="#171717" font-family="DM Sans,sans-serif">100%</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARKET PILL -->
+    <div class="mkt-pill">
+      <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
+        <path d="M0 7 Q2.5 1 5 7 Q7.5 13 10 7 Q12.5 1 15 7 Q17.5 13 20 7" stroke="#B8D86A" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      </svg>
+      Watchlist scan &middot; <strong>137 thesis-relevant changes</strong>
+    </div>
+  </div>
+
+  <!-- Hero decorative elements -->
+  <div class="deco-squiggle" style="top:15%;right:8%;animation-delay:.8s;">
+    <svg width="120" height="40" viewBox="0 0 120 40" fill="none">
+      <path d="M0 20 Q15 5 30 20 Q45 35 60 20 Q75 5 90 20 Q105 35 120 20" stroke="#B8D86A" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.35"
+        style="stroke-dasharray:200;stroke-dashoffset:200;animation:waveIn 1.5s cubic-bezier(0.22,1,0.36,1) 1s forwards"/>
+    </svg>
+  </div>
+  <div class="deco-dot" style="top:30%;right:15%;animation-delay:0s;"></div>
+  <div class="deco-dot" style="top:65%;right:5%;animation-delay:1.2s;width:3px;height:3px;opacity:.4"></div>
+  <div class="deco-dot" style="top:20%;right:40%;animation-delay:0.6s;width:4px;height:4px;"></div>
+</section>
+
+<!-- TICKER BANNER -->
+<div id="ticker">
+  <div class="ticker-track" id="tickerTrack">
+    <div class="tick-item"><div class="tick-dot"></div>Guidance changed <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>Margins improving <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>Demand softening <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>Management changed <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>Valuation reset <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>Brief triggered <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>No material change <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>Guidance changed <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>Margins improving <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>Demand softening <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>Management changed <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>Valuation reset <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>Brief triggered <span>&#8599;</span></div>
+    <div class="tick-item"><div class="tick-dot"></div>No material change <span>&#8599;</span></div>
+  </div>
+</div>
+
+<!-- BIG CAROUSEL / TIMELINE -->
+<section id="big-carousel" style="border-top:none;">
+  <div class="carousel-bg">
+    <div class="drift-row l">Read less.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Miss less.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Read less.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Miss less.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Read less.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Miss less.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+  </div>
+  <div class="carousel-inner">
+    <div class="car-side rv">
+      <p>You bought for a reason. Kolo watches whether that reason still holds across filings, calls, estimates, news, and market reaction.</p>
+    </div>
+    <div class="rv d1">
+      <h2 class="car-headline" id="carHl">The case moved.<br>Your brief is <span class="accent">ready.</span></h2>
+      <div class="tl-wrap">
+        <div class="tl-rail" id="tlRail">
+          <div class="tl-fill" id="tlFill"></div>
+          <div class="tl-dots-row">
+            <div class="tl-d" data-i="0"></div>
+            <div class="tl-d" data-i="1"></div>
+            <div class="tl-d" data-i="2"></div>
+            <div class="tl-d" data-i="3"></div>
+            <div class="tl-d" data-i="4"></div>
+            <div class="tl-d" data-i="5"></div>
+          </div>
+          <div class="tl-dog" id="tlDog">●</div>
+        </div>
+        <div class="tl-labels">
+          <span class="tl-lbl" data-i="0">Buy</span>
+          <span class="tl-lbl" data-i="1">Track the case</span>
+          <span class="tl-lbl" data-i="2">Stop checking</span>
+          <span class="tl-lbl" data-i="3">Evidence changes</span>
+          <span class="tl-lbl" data-i="4">Review late</span>
+          <span class="tl-lbl" data-i="5">React</span>
+        </div>
+        <div class="tl-chip">Kolo flags the review before it becomes a catch-up exercise.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THREE JOBS -->
+<section id="three-jobs">
+  <div class="si">
+    <div class="jobs-l rv">
+      <div class="eyebrow">What Kolo Watches</div>
+      <h2 class="jobs-title"><span class="squiggle-under">The case,</span><br>not the noise.</h2>
+
+    </div>
+    <div class="jobs-r">
+      <div class="card job-card rv">
+        <div class="job-num">01</div>
+        <div class="job-icon">
+          <svg viewBox="0 0 42 42" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <circle cx="21" cy="21" r="14" stroke-dasharray="5 3.5" opacity=".4"/>
+            <circle cx="21" cy="21" r="8"/>
+            <circle cx="21" cy="21" r="2.5" fill="currentColor" stroke="none"/>
+            <line x1="21" y1="7" x2="21" y2="4"/>
+            <line x1="21" y1="38" x2="21" y2="35"/>
+            <line x1="7" y1="21" x2="4" y2="21"/>
+            <line x1="38" y1="21" x2="35" y2="21"/>
+          </svg>
+        </div>
+        <div class="job-title">Watch the reasons</div>
+        <div class="job-sub">Guidance, demand, margins, management.</div>
+        <div class="job-body">Kolo tracks the drivers that make a position worth owning, then separates ordinary updates from changes that alter the case.</div>
+        <div class="job-arr">→</div>
+      </div>
+      <div class="card job-card rv d1">
+        <div class="job-num">02</div>
+        <div class="job-icon">
+          <svg viewBox="0 0 42 42" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" id="clockSvg">
+            <circle cx="21" cy="21" r="14"/>
+            <line id="clockH" x1="21" y1="21" x2="21" y2="11" style="transform-origin:21px 21px"/>
+            <line x1="21" y1="21" x2="27" y2="23" stroke-width="1.2"/>
+            <circle cx="21" cy="21" r="1.8" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div class="job-title">Send the review</div>
+        <div class="job-sub">What changed, why it matters, what would disprove it.</div>
+        <div class="job-body">The brief gives you the prior thesis, the new evidence, the read-through, and the questions worth asking next.</div>
+        <div class="job-arr">→</div>
+      </div>
+      <div class="card job-card rv d2">
+        <div class="job-num">03</div>
+        <div class="job-icon">
+          <svg viewBox="0 0 42 42" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <path d="M14 17 Q8 11 5 8"/>
+            <path d="M28 17 Q34 11 37 8"/>
+            <circle cx="21" cy="21" r="9"/>
+            <circle cx="21" cy="21" r="3" fill="currentColor" stroke="none" opacity=".3"/>
+            <line x1="21" y1="30" x2="21" y2="36"/>
+          </svg>
+        </div>
+        <div class="job-title">Stay quiet otherwise</div>
+        <div class="job-sub">No update when there is no decision to make.</div>
+        <div class="job-body">If the case still holds, Kolo does not manufacture a take. Your attention stays with the names that actually need a reread.</div>
+        <div class="job-arr">→</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEXT WALL -->
+<section id="text-wall" style="border-top:none;">
+  <div class="tw-track-wrap">
+    <div class="tw-row l">
+      <span class="tw-unit">The <span class="kw">reason you own it</span> changed. Kolo tells you <span class="kw">what moved.</span></span>
+      <span class="tw-unit" aria-hidden="true">The <span class="kw">reason you own it</span> changed. Kolo tells you <span class="kw">what moved.</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNAL VS NOISE -->
+<section id="signal">
+  <!-- Signal section dots -->
+  <div class="deco-ring" style="width:180px;height:180px;top:10%;right:5%;animation-delay:.3s;"></div>
+  <div class="deco-dot" style="bottom:15%;left:10%;animation-delay:.8s;"></div>
+  <div class="si">
+    <div class="sig-left rv">
+      <h2>Most research tools give you more to check. Kolo tells you what deserves a <span class="accent grow-word">reread.</span></h2>
+      <p>Instead of dumping ratios, headlines, transcripts, and filings into another queue, Kolo returns the change in the case: what moved, what held, and what deserves attention now.</p>
+    </div>
+    <div class="noise-cloud rv d1">
+      <div class="np" style="top:5%;left:38%;animation:fs1 8s ease-in-out infinite">P/E</div>
+      <div class="np" style="top:2%;left:60%;animation:fs2 10s ease-in-out infinite">EPS</div>
+      <div class="np" style="top:16%;left:18%;animation:fs3 9s ease-in-out infinite">ROE</div>
+      <div class="np" style="top:16%;left:54%;animation:fs4 11s ease-in-out infinite">ROA</div>
+      <div class="np" style="top:28%;left:4%;animation:fs1 10s ease-in-out 1s infinite;opacity:.65">EV/EBITDA</div>
+      <div class="np" style="top:30%;left:48%;animation:fs2 7s ease-in-out infinite">FCF</div>
+      <div class="np" style="top:40%;left:22%;animation:fs3 13s ease-in-out infinite">PEG</div>
+      <div class="np" style="top:48%;left:40%;animation:fs4 9s ease-in-out .5s infinite">D/E</div>
+      <div class="np" style="top:54%;left:6%;animation:fs1 11s ease-in-out 2s infinite;opacity:.75">Beta</div>
+      <div class="np" style="top:58%;left:30%;animation:fs2 8s ease-in-out infinite">RSI</div>
+      <div class="np" style="top:64%;left:54%;animation:fs3 10s ease-in-out 1.5s infinite;opacity:.65">MACD</div>
+      <div class="np" style="top:70%;left:14%;animation:fs4 12s ease-in-out infinite">News</div>
+      <div class="np" style="top:76%;left:40%;animation:fs1 9s ease-in-out .8s infinite;opacity:.6">Reddit</div>
+      <div class="np" style="top:82%;left:20%;animation:fs2 11s ease-in-out infinite;opacity:.65">10-K</div>
+      <div class="np" style="top:88%;left:52%;animation:fs3 8s ease-in-out 2s infinite">Rumors</div>
+      <div style="position:absolute;top:44%;left:44%;width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2.5s ease-in-out infinite"></div>
+      <div class="sig-arrow">→</div>
+    </div>
+    <div class="card out-card rv d2">
+      <div class="out-title">What Comes Back</div>
+      <div class="out-item">
+        <div class="out-check">✓</div>
+        <div><div class="out-lbl">The trigger</div><div class="out-desc">The specific change that made the name worth reviewing.</div></div>
+      </div>
+      <div class="out-item">
+        <div class="out-check">✓</div>
+        <div><div class="out-lbl">The evidence</div><div class="out-desc">The filings, calls, estimates, and market reaction behind it.</div></div>
+      </div>
+      <div class="out-item">
+        <div class="out-check">✓</div>
+        <div><div class="out-lbl">The read-through</div><div class="out-desc">Whether the original reason to own it strengthened or weakened.</div></div>
+      </div>
+      <div class="out-item">
+        <div class="out-check">✓</div>
+        <div><div class="out-lbl">No note</div><div class="out-desc">Silence when there is no decision-relevant change.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THESIS ORBIT + TRACK RECORD -->
+<section id="orbit">
+  <!-- Orbit decorative corner -->
+  <div class="corner-accent" style="top:20px;right:20px;">
+    <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+      <path d="M60 0 Q60 60 0 60" stroke="#B8D86A" stroke-width="1.5" fill="none"/>
+    </svg>
+  </div>
+  <div class="si">
+    <div class="orbit-l rv">
+      <div class="eyebrow">Thesis Orbit</div>
+      <h2><span class="squiggle-under">Every holding</span><br>has a reason.</h2>
+      <p>Kolo maps the drivers behind that reason so you can see what is strengthening, what is slipping, and what deserves a fresh read.</p>
+    </div>
+
+    <div class="rv d1" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+      <div class="orbit-diagram" id="orbitDiagram">
+        <div class="orbit-ring-el"></div>
+        <div class="orbit-ring-el"></div>
+        <div class="orbit-center">
+          <div class="orbit-co-logo">
+            <img src="assets/porsche-crest.webp" style="width:100%;height:100%;object-fit:contain;padding:2px;" alt="Porsche"/>
+          </div>
+          <div class="orbit-cn">Porsche</div>
+          <div class="orbit-cs">Intact</div>
+          <div class="orbit-cp">82%</div>
+        </div>
+        <!-- Nodes: Management, Margins, Demand, Competition, Valuation, Narrative, Execution -->
+        <div class="orbit-node" data-node="Management" style="top:4%;left:50%;transform:translate(-50%,-50%);">
+          <div class="orbit-dot"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></div><div class="orbit-lbl">Management</div>
+        </div>
+        <div class="orbit-node" data-node="Margins" style="top:21%;left:86%;transform:translate(-50%,-50%);">
+          <div class="orbit-dot"><svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-8"/></svg></div><div class="orbit-lbl">Margins</div>
+        </div>
+        <div class="orbit-node" data-node="Demand" style="top:60%;left:95%;transform:translate(-50%,-50%);">
+          <div class="orbit-dot"><svg viewBox="0 0 24 24"><path d="M4 17 9 12l4 4 7-9"/><path d="M15 7h5v5"/></svg></div><div class="orbit-lbl">Demand</div>
+        </div>
+        <div class="orbit-node" data-node="Competition" style="top:91%;left:70%;transform:translate(-50%,-50%);">
+          <div class="orbit-dot"><svg viewBox="0 0 24 24"><path d="m7 7 10 10"/><path d="m17 7-10 10"/><path d="M5 5h4v4"/><path d="M19 5h-4v4"/></svg></div><div class="orbit-lbl">Competition</div>
+        </div>
+        <div class="orbit-node" data-node="Valuation" style="top:60%;left:5%;transform:translate(-50%,-50%);">
+          <div class="orbit-dot"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M17 7.5c0-1.7-2.2-2.8-5-2.8s-5 1.1-5 2.8 2.2 2.6 5 2.6 5 1 5 2.7-2.2 2.9-5 2.9-5-1.2-5-2.9"/></svg></div><div class="orbit-lbl">Valuation</div>
+        </div>
+        <div class="orbit-node" data-node="Narrative" style="top:21%;left:14%;transform:translate(-50%,-50%);">
+          <div class="orbit-dot"><svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"/><path d="M9 10h6"/><path d="M9 14h6"/></svg></div><div class="orbit-lbl">Narrative</div>
+        </div>
+        <div class="orbit-node" data-node="Execution" style="top:91%;left:30%;transform:translate(-50%,-50%);">
+          <div class="orbit-dot"><svg viewBox="0 0 24 24"><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/><circle cx="12" cy="12" r="4"/></svg></div><div class="orbit-lbl">Execution</div>
+        </div>
+      </div>
+      <div class="orbit-caption" id="orbitCap">Management change alters the recovery path.</div>
+    </div>
+
+    <div class="card track-card rv d2">
+      <div class="track-ttl">Changes Worth Reviewing</div>
+      <div class="track-row">
+        <div class="track-logo-row">
+          <div class="track-logo figma-l" style="background:transparent;"><img src="assets/figma-logo.webp" style="width:100%;height:100%;object-fit:contain;" alt="Figma"/></div>
+          <div class="track-date">JAN 24 → MAR 24</div>
+        </div>
+        <div class="track-top">
+          <div class="track-desc">Figma growth reacceleration changed the setup.</div>
+          <div class="track-pct" data-target="18">+0%</div>
+        </div>
+      </div>
+      <div class="track-row">
+        <div class="track-logo-row">
+          <div class="track-logo atl-l" style="background:transparent;"><img src="assets/atlassian-logo.webp" style="width:100%;height:100%;object-fit:contain;" alt="Atlassian"/></div>
+          <div class="track-date">JUN 23 → AUG 23</div>
+        </div>
+        <div class="track-top">
+          <div class="track-desc">Atlassian Rovo moved from product detail to revenue driver.</div>
+          <div class="track-pct" data-target="27">+0%</div>
+        </div>
+      </div>
+      <div class="track-row">
+        <div class="track-logo-row">
+          <div class="track-logo shop-l" style="background:transparent;"><img src="assets/shopify-logo.webp" style="width:100%;height:100%;object-fit:contain;" alt="Shopify"/></div>
+          <div class="track-date">NOV 22 → FEB 23</div>
+        </div>
+        <div class="track-top">
+          <div class="track-desc">Shopify margin discipline made the thesis worth revisiting.</div>
+          <div class="track-pct" data-target="31">+0%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<!-- FOOTER -->
+<footer style="padding:0;text-align:center;background:var(--bg-main);">
+  <!-- Car + CTA overlay section -->
+  <div style="position:relative;overflow:hidden;height:360px;background:#e8e8e0;">
+    <!-- Porsche car — cropped, bottom 60% shown -->
+    <img src="assets/porsche-911-green.webp" style="position:absolute;inset:0;width:100%;height:160%;object-fit:cover;object-position:center 55%;opacity:.88;" alt="Porsche 911"/>
+    <!-- Dark gradient overlay for text legibility -->
+    <div style="position:absolute;inset:0;background:linear-gradient(to right, rgba(23,23,15,0.72) 0%, rgba(23,23,15,0.38) 55%, rgba(23,23,15,0.12) 100%);"></div>
+    <!-- Wave SVG -->
+    <svg style="position:absolute;bottom:0;right:0;width:440px;height:220px;pointer-events:none;opacity:.22;" viewBox="0 0 440 220" fill="none">
+      <path d="M0 180 Q55 110 110 150 Q165 190 220 110 Q275 30 330 90 Q390 150 440 70" stroke="#B8D86A" stroke-width="2" fill="none" style="stroke-dasharray:800;stroke-dashoffset:800;animation:waveIn 2s cubic-bezier(0.22,1,0.36,1) .5s forwards"/>
+      <path d="M0 200 Q70 150 140 175 Q210 200 280 130 Q350 60 440 110" stroke="#B8D86A" stroke-width="1.5" fill="none" opacity=".6" style="stroke-dasharray:800;stroke-dashoffset:800;animation:waveIn 2.5s cubic-bezier(0.22,1,0.36,1) .8s forwards"/>
+    </svg>
+    <!-- CTA Text Overlay -->
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 clamp(24px,5vw,80px);">
+      <h2 style="font-size:clamp(42px,6vw,82px);font-weight:500;letter-spacing:-.055em;line-height:.98;margin-bottom:16px;color:#F8F8F3;position:relative;display:inline-block;">
+        Own the reason.<br><span style="font-family:'Instrument Serif',serif;font-style:italic;color:#B8D86A;letter-spacing:-.03em;">Know when it changes.</span><span style="display:inline-block;color:#B8D86A;animation:sparkPop 2.5s ease-in-out infinite;font-size:16px;position:relative;top:-4px;margin-left:6px;">✦</span>
+      </h2>
+      <p style="font-size:15px;color:rgba(248,248,243,0.75);max-width:400px;line-height:1.65;margin-bottom:28px;">For investors who want fewer check-ins, cleaner briefs, and a better answer to: do I still want to own this?</p>
+    </div>
+  </div>
+  <!-- Sample Brief row -->
+  <div style="padding:26px clamp(20px,4vw,72px) 14px;">
+    <div class="eyebrow" style="font-size:10px;letter-spacing:.18em;">Sample Brief</div>
+  </div>
+  <div class="footer-sample-grid" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:stretch;padding:0 clamp(20px,4vw,72px) 36px;">
+    <div class="footer-sample-card card" style="border-radius:20px;padding:26px;display:flex;flex-direction:column;min-height:320px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px;">
+        <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+          <div style="width:60px;height:60px;border-radius:14px;border:1px solid rgba(23,23,23,.08);background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:5px;flex-shrink:0;">
+            <img src="assets/porsche-crest.webp" style="width:100%;height:100%;object-fit:contain;" alt="Porsche"/>
+          </div>
+          <div style="font-size:20px;font-weight:600;letter-spacing:-.03em;line-height:1.05;min-width:0;">Porsche</div>
+        </div>
+        <div style="flex-shrink:0;background:var(--green-soft);border:1px solid var(--border-green);border-radius:999px;padding:5px 12px;font-size:9.5px;font-weight:700;color:var(--green-dark);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;">12 MIN READ</div>
+      </div>
+      <div style="background:var(--bg-soft);border-left:2.5px solid var(--green);border-radius:10px;padding:16px 18px;font-size:14px;line-height:1.75;color:var(--text-secondary);margin-bottom:auto;">
+        The EV reset damaged earnings, but the valuation now reflects much of that pain. The new CEO is shifting attention back to combustion, lowering volume ambition, and testing whether Porsche can recover pricing discipline without pretending the EV plan worked.
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-top:22px;">
+        <div>
+          <div style="font-size:10px;color:var(--text-muted);letter-spacing:.05em;margin-bottom:4px;">6–12 MONTH VIEW</div>
+          <div style="font-size:10px;color:var(--text-muted);letter-spacing:.05em;">UPDATED JUN 12, 2026</div>
+        </div>
+        <div style="width:28px;height:28px;border-radius:50%;border:1px solid var(--border-soft);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-muted);flex-shrink:0;">→</div>
+      </div>
+    </div>
+
+    <div class="footer-sample-card card" style="position:relative;overflow:hidden;border-radius:20px;min-height:320px;padding:0;">
+      <img src="assets/porsche-911-green.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 48%;filter:blur(15px) saturate(.78) brightness(1.08);transform:scale(1.1);opacity:.72;" alt="Blurred Porsche preview"/>
+      <div style="position:absolute;inset:0;background:rgba(248,248,243,.58);backdrop-filter:blur(6px);"></div>
+      <div style="position:relative;z-index:1;min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 28px;text-align:center;">
+        <svg width="28" height="31" viewBox="0 0 24 28" fill="none" style="margin-bottom:14px;opacity:.36;">
+          <path d="M7 11V8.5C7 5.46243 9.46243 3 12.5 3C15.5376 3 18 5.46243 18 8.5V11" stroke="#6F6F69" stroke-width="1.8" stroke-linecap="round"/>
+          <rect x="4" y="11" width="17" height="13" rx="3.2" stroke="#6F6F69" stroke-width="1.8"/>
+        </svg>
+        <div style="font-size:15px;color:rgba(23,23,23,.6);line-height:1.45;max-width:290px;margin-bottom:16px;">Become a member to read the full brief</div>
+        <div style="font-size:13px;color:rgba(23,23,23,.38);line-height:1.5;max-width:320px;margin-bottom:22px;">Join investors who use Kolo to decide which holdings need another look.</div>
+        <a href="#" style="display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#151711;border-radius:999px;padding:13px 24px;font-weight:600;font-size:14px;text-decoration:none;border:1px solid rgba(82,111,43,.18);box-shadow:0 10px 28px rgba(184,216,106,.28);">Request Access <span style="font-size:16px;line-height:1;">&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+  <!-- Footer bottom -->
+  <div style="padding:28px clamp(20px,4vw,72px);">
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;opacity:.4;">
+      <svg width="18" height="20" viewBox="0 0 22 24" fill="none"><path d="M11 2L2 6v7c0 5 3.5 9.5 9 10.5C16.5 22.5 20 18 20 13V6L11 2z" stroke="#94948D" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>
+      <span style="font-size:15px;font-weight:600;letter-spacing:-.03em;">kolo</span>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);line-height:1.9;">Built for investors who track why they own what they own.</p>
+    <p style="font-size:12px;color:var(--text-muted);">No manufactured alerts. No market theatre. Just the changes that deserve a reread.</p>
+  </div>
+</footer>
+
+<script>
+// ── HEADER SCROLL ──
+const hdr = document.getElementById('hdr');
+window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', scrollY > 24), {passive:true});
+
+// ── HERO ANIMATIONS ──
+setTimeout(() => {
+  document.getElementById('confFill').style.width = '82%';
+  document.getElementById('portRing').style.strokeDashoffset = '0';
+  let n=0;
+  const t = setInterval(()=>{ n=Math.min(n+2,82); document.getElementById('confVal').textContent=n+'%'; if(n>=82)clearInterval(t); },18);
+}, 900);
+
+// ── SCROLL REVEAL ──
+new IntersectionObserver((entries,obs)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('vis'); obs.unobserve(e.target); }});
+},{threshold:.1}).observe(document.body);
+
+const rvEls = document.querySelectorAll('.rv');
+const rvObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('vis'); rvObs.unobserve(e.target); }});
+},{threshold:.1});
+rvEls.forEach(el=>rvObs.observe(el));
+
+// ── TIMELINE DOG BOUNCE ──
+const tlDog = document.getElementById('tlDog');
+const tlFill = document.getElementById('tlFill');
+const tlDots = document.querySelectorAll('.tl-d');
+const tlLabels = document.querySelectorAll('.tl-lbl');
+let tlDogPos = 0; // 0-5
+let tlRunning = false;
+let tlTimer;
+
+function moveDog(to) {
+  tlDogPos = to;
+  const pct = (to / 5) * 100;
+  tlDog.style.left = pct + '%';
+  // Bounce animation
+  tlDog.style.animation = 'none';
+  void tlDog.offsetWidth;
+  tlDog.style.animation = 'dotBounce .5s var(--ease) forwards';
+  // Update fill and dots
+  tlFill.style.width = pct + '%';
+  tlDots.forEach((d,i)=>{
+    d.classList.remove('active','passed');
+    if(i<to) d.classList.add('passed');
+    if(i===to) d.classList.add('active');
+  });
+  tlLabels.forEach((l,i)=>{
+    l.classList.toggle('active', i===to);
+  });
+}
+
+function startTimeline() {
+  if(tlRunning) return;
+  tlRunning = true;
+  moveDog(0);
+  let step = 0;
+  const stepDelays = [0,700,1400,2100,2800,3600,5200]; // pause at Miss a shift (3)
+  function advance() {
+    step++;
+    if(step > 5) {
+      setTimeout(()=>{ step=0; moveDog(0); setTimeout(advance,800); },1800);
+      return;
+    }
+    moveDog(step);
+    // Longer pause at "Miss a shift" (step 3)
+    const delay = step === 3 ? 2200 : 700;
+    setTimeout(advance, delay);
+  }
+  setTimeout(advance, 500);
+}
+
+const tlSection = document.getElementById('big-carousel');
+new IntersectionObserver((entries)=>{
+  if(entries[0].isIntersecting) startTimeline();
+},{threshold:.3}).observe(tlSection);
+
+// ── TEXT WALL KEYWORD LIT ──
+const twRows = document.querySelectorAll('.tw-row');
+const kwObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    const kws = e.target.querySelectorAll('.kw');
+    if(e.isIntersecting){ kws.forEach((k,i)=>setTimeout(()=>k.classList.add('lit'),i*120+80)); }
+    else{ kws.forEach(k=>k.classList.remove('lit')); }
+  });
+},{threshold:.4});
+twRows.forEach(r=>kwObs.observe(r));
+
+// ── CLOCK ──
+let clockDeg=0;
+const clockH=document.getElementById('clockH');
+if(clockH){
+  setInterval(()=>{ clockDeg+=12; clockH.style.transform=`rotate(${clockDeg}deg)`; },3000);
+  const jc=clockH.closest('.job-card');
+  if(jc) jc.addEventListener('mouseenter',()=>{ clockDeg+=360; clockH.style.transform=`rotate(${clockDeg}deg)`;clockH.style.transition='transform .5s cubic-bezier(.22,1,.36,1)'; });
+}
+
+// ── ORBIT ──
+const orbitData=[
+  {node:'Management',caption:'Management change alters the recovery path.',color:'green'},
+  {node:'Margins',caption:'Pricing discipline is the key proof point.',color:'green'},
+  {node:'Execution',caption:'Execution is the part of the case to keep testing.',color:'amber'},
+  {node:'Demand',caption:'ICE demand still supports the margin case.',color:'green'},
+  {node:'Valuation',caption:'Valuation now reflects a damaged EV plan.',color:'green'},
+  {node:'Narrative',caption:'Brand narrative is moving back toward performance discipline.',color:'green'},
+  {node:'Competition',caption:'Chinese EV rivals remain the pressure point.',color:'amber'},
+];
+const orbitNodes=document.querySelectorAll('.orbit-node');
+const orbitCap=document.getElementById('orbitCap');
+let orIdx=0, orPaused=false, orTimer;
+
+function activateOrbit(idx){
+  orbitNodes.forEach(n=>{
+    n.classList.remove('active','dim');
+    if(n.dataset.node===orbitData[idx].node) n.classList.add('active');
+    else n.classList.add('dim');
+  });
+  orbitCap.style.opacity='0';
+  setTimeout(()=>{ orbitCap.textContent=orbitData[idx].caption; orbitCap.style.opacity='1'; },180);
+}
+activateOrbit(0);
+orTimer=setInterval(()=>{ if(!orPaused){ orIdx=(orIdx+1)%orbitData.length; activateOrbit(orIdx); }},3500);
+orbitNodes.forEach(n=>{
+  n.addEventListener('mouseenter',()=>{ orPaused=true; const m=orbitData.findIndex(d=>d.node===n.dataset.node); if(m>=0){orIdx=m;activateOrbit(m);} });
+  n.addEventListener('mouseleave',()=>{ setTimeout(()=>orPaused=false,1500); });
+});
+
+// ── TRACK RECORD COUNTER ──
+const tpEls=document.querySelectorAll('.track-pct');
+const trackObserver=new IntersectionObserver((entries,observer)=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting || e.target.dataset.counted==='true') return;
+
+    const target=Number.parseInt(e.target.dataset.target,10);
+    if(Number.isNaN(target)) return;
+
+    e.target.dataset.counted='true';
+    let n=0;
+    const t=setInterval(()=>{
+      n=Math.min(n+1,target);
+      e.target.textContent='+'+n+'%';
+      if(n>=target){
+        clearInterval(t);
+        observer.unobserve(e.target);
+      }
+    },25);
+  });
+},{threshold:.5});
+
+tpEls.forEach(el=>trackObserver.observe(el));
+</script>
+<a class="kolo-home-link" href="https://moeessah.github.io/Kolo/" aria-label="Kolo index"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 10.8 12 3.8l8.5 7v9.4a.8.8 0 0 1-.8.8h-5.2v-6.2h-5V21H4.3a.8.8 0 0 1-.8-.8v-9.4Z" stroke-width="1.8" stroke-linejoin="round"/></svg></a>
+</body>
+</html>
