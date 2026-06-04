@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Maureen Essah | Kolo Homepage Directions</title>
+<link rel="icon" href="favicon-main.svg" type="image/svg+xml"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060f1d;
+  --bg2:#081527;
+  --panel:#081527;
+  --ink:#ffffff;
+  --muted:rgba(255,255,255,.7);
+  --soft:rgba(255,255,255,.3);
+  --line:rgba(255,255,255,.1);
+  --olive:#b8d86a;
+  --deep:#b4f032;
+  --orange:#f15a24;
+  --warm:#d8793a;
+  --lime:#c6f135;
+  --w:#ffffff;
+  --w70:rgba(255,255,255,.7);
+  --w30:rgba(255,255,255,.3);
+  --w10:rgba(255,255,255,.1);
+  --w05:rgba(255,255,255,.05);
+  --w02:rgba(255,255,255,.025);
+  --sans:"DM Sans",system-ui,sans-serif;
+  --mono:"DM Mono",monospace;
+  --ease:cubic-bezier(.16,1,.3,1)
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.wrap{max-width:1160px;margin:0 auto;padding:0 3rem}
+::selection{background:var(--lime);color:var(--bg)}
+#bar{position:fixed;top:0;left:0;height:2px;width:0;background:var(--lime);z-index:999;transition:width .06s linear}
+.w{max-width:1160px;margin:0 auto;padding:0 3rem}
+nav{position:sticky;top:0;z-index:200;background:rgba(6,15,29,.94);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--w05)}
+.nav-inner{position:relative;display:flex;align-items:center;justify-content:center;height:58px;gap:1rem}
+.nav-logo{position:absolute;left:-40px;top:50%;transform:translateY(-50%);flex-shrink:0;display:inline-flex;align-items:center;gap:4px;min-height:58px;padding-right:16px;text-decoration:none;color:rgba(255,255,255,.92)}
+.nav-logo-dot{width:8px;height:8px;border-radius:999px;background:var(--lime);box-shadow:0 0 10px rgba(255,255,255,.18)}
+.nav-logo-label{display:inline-flex;align-items:center;font:700 9.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.nav-links{display:flex;align-items:center;gap:.15rem;flex:0 0 auto;justify-content:center}
+.nav-link{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);text-decoration:none;padding:.4rem .85rem;border-radius:3px;transition:color .15s,background .15s}
+.nav-link:hover{color:var(--w);background:rgba(255,255,255,.07)}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:48px;align-items:end;padding:70px 0 42px;border-bottom:1px solid var(--line)}
+.hero-kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--olive);margin-bottom:18px}
+h1{max-width:860px;font-size:clamp(54px,8vw,106px);line-height:.87;letter-spacing:-.07em;font-weight:800}
+.hero-copy{max-width:650px;margin-top:26px;color:var(--muted);font-size:16px;line-height:1.8}
+.hero-note{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;gap:28px;padding:22px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.02));border-radius:8px}
+.note-label{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--soft)}
+.note-count{display:flex;align-items:baseline;gap:10px}
+.note-count strong{font-size:76px;line-height:.85;letter-spacing:-.08em;color:var(--ink)}
+.note-count span{font-family:var(--mono);font-size:11px;color:var(--olive);letter-spacing:.12em;text-transform:uppercase}
+.note-line{height:1px;background:linear-gradient(90deg,var(--orange),transparent)}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;padding:42px 0 18px}
+.section-head h2{font-size:clamp(28px,4vw,48px);line-height:1;letter-spacing:-.055em}
+.section-head p{max-width:430px;color:var(--muted)}
+.design-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:2px;padding:2px;background:rgba(255,255,255,.045);margin-bottom:54px}
+.design-card{position:relative;min-height:390px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;background:var(--panel);border:1px solid rgba(255,255,255,.045);isolation:isolate;transition:transform .28s var(--ease),border-color .28s var(--ease)}
+.design-card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.design-card.featured{min-height:560px;grid-row:span 2}
+.design-card::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.74));z-index:-1}
+.design-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.72;z-index:-2;filter:saturate(.92)}
+.design-card.dark img{opacity:.78;filter:saturate(1.05) contrast(1.08)}
+.design-card.orange img{opacity:.74}
+.card-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);padding:7px 9px;border:1px solid color-mix(in srgb,var(--accent) 42%,transparent);background:rgba(0,0,0,.22)}
+.card-num{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.42)}
+.card-body{padding:22px}
+.card-body h3{max-width:580px;font-size:clamp(32px,4.8vw,64px);line-height:.94;letter-spacing:-.06em;margin-bottom:16px}
+.design-card:not(.featured) .card-body h3{font-size:clamp(28px,3.5vw,42px)}
+.card-body p{max-width:520px;color:rgba(255,255,255,.72);font-size:15px;line-height:1.7;margin-bottom:22px}
+.card-cta{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#fff}
+.card-cta span{display:grid;place-items:center;width:28px;height:28px;border:1px solid color-mix(in srgb,var(--accent) 54%,transparent);border-radius:50%;color:var(--accent);background:rgba(0,0,0,.22)}
+.mood-row{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:-28px 0 64px;background:rgba(255,255,255,.045);padding:2px}
+.mood{min-height:118px;padding:18px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.035)}
+.mood b{display:block;margin-bottom:16px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.mood span{display:block;color:var(--muted);line-height:1.7}
+footer{background:var(--bg2);border-top:1px solid var(--w05);padding:1.5rem 0}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:1rem;color:var(--w30);font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;position:relative}
+.foot span:first-child{transform:translateX(-40px)}
+@media(max-width:860px){.nav-links{display:none}.hero{grid-template-columns:1fr;padding-top:48px}.hero-note{max-width:420px}.design-grid,.mood-row{grid-template-columns:1fr}.design-card.featured{min-height:480px}.design-card{min-height:410px}}
+@media(max-width:560px){.wrap,.w{padding:0 1.5rem}.foot span:first-child{transform:none}h1{font-size:clamp(46px,18vw,72px)}.section-head{display:block}.section-head p{margin-top:14px}.card-top,.card-body{padding:18px}}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+
+<nav>
+  <div class="w">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html"><span class="nav-logo-dot" aria-hidden="true"></span><span class="nav-logo-label">Kolo</span></a>
+      <div class="nav-links">
+        <a class="nav-link" href="#designs">Projects</a>
+      </div>
+    </div>
+  </div>
+</nav>
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <p class="hero-kicker">Kolo homepage concepts</p>
+      <h1>Three homepage directions for Kolo.</h1>
+      <p class="hero-copy">I created three possible first impressions for Kolo: a clear product-led page, a sharper market-signal page, and a warmer investor-facing page. The aim is to make the first version of the brand feel considered, specific, and ready to build on.</p>
+    </div>
+    <aside class="hero-note" aria-label="Kolo design summary">
+      <p class="note-label">Built concepts</p>
+      <div class="note-count"><strong>3</strong><span>design<br/>directions</span></div>
+      <div class="note-line"></div>
+      <p class="note-label">Three clickable directions, each with its own positioning angle.</p>
+    </aside>
+  </section>
+  <section id="designs" aria-label="Homepage designs">
+    <div class="section-head">
+      <h2>Compare the routes.</h2>
+      <p>The layouts test three ways to introduce Kolo: explain the product fast, make market intelligence feel sharper, or build trust with long-term investors.</p>
+    </div>
+    <div class="design-grid">
+      <a class="design-card featured" href="kolo-olive/kolo-olive.html" style="--accent:var(--olive)">
+        <img src="kolo-olive/assets/porsche-911-green.webp" alt="Green Porsche preview from the olive Kolo homepage"/>
+        <div class="card-top"><span class="badge">Product-led route</span><span class="card-num">01</span></div>
+        <div class="card-body">
+          <h3>Make the product easy to understand.</h3>
+          <p>A homepage built around thesis briefs, watchlists, and portfolio health. It explains Kolo as a practical investor intelligence tool and shows how the product could fit into someone's research routine.</p>
+          <span class="card-cta">View page <span>-></span></span>
+        </div>
+      </a>
+      <a class="design-card dark" href="kolo-dark/kolo-dark.html" style="--accent:var(--deep)">
+        <img src="kolo-dark/assets/earth-horizon-data-beams.png" alt="Dark earth horizon preview from the Kolo market noise homepage"/>
+        <div class="card-top"><span class="badge">Market-signal route</span><span class="card-num">02</span></div>
+        <div class="card-body">
+          <h3>Turn market noise into clear signals.</h3>
+          <p>A high-contrast route for active investors who want quick context. Alert-style sections, signal cards, and archive tiles make Kolo feel fast, focused, and intelligence-led.</p>
+          <span class="card-cta">View page <span>-></span></span>
+        </div>
+      </a>
+      <a class="design-card orange" href="kolo-orange/kolo-orange.html" style="--accent:var(--orange)">
+        <img src="kolo-orange/assets/hero-mountain-stairs.webp" alt="Mountain and stone stairs preview from the orange Kolo homepage"/>
+        <div class="card-top"><span class="badge">Trust-led route</span><span class="card-num">03</span></div>
+        <div class="card-body">
+          <h3>Give investing a clearer entry point.</h3>
+          <p>A warmer direction for long-term investors. It frames Kolo around research habits, clearer decisions, and a more premium advisory feel.</p>
+          <span class="card-cta">View page <span>-></span></span>
+        </div>
+      </a>
+    </div>
+    <div class="mood-row" aria-label="Design mood comparison">
+      <div class="mood" style="--accent:var(--olive)"><b>Product story</b><span>Makes the offer clear quickly: monitor theses, track changes, and understand what needs attention.</span></div>
+      <div class="mood" style="--accent:var(--deep)"><b>Investor behaviour</b><span>Speaks to people who already follow markets and need better filtering, not another news feed.</span></div>
+      <div class="mood" style="--accent:var(--orange)"><b>Brand range</b><span>Shows how Kolo can feel technical, premium, or approachable without losing the core idea.</span></div>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="w">
+    <div class="foot">
+      <span>Essah</span>
+      <span>Selected Work</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('scroll',function(){
+  const b=document.getElementById('bar');
+  const s=document.body.scrollHeight-window.innerHeight;
+  b.style.width=(s>0?(window.scrollY/s)*100:0)+'%';
+});
+</script>
+</body>
+</html>
