@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kolo - Investing, without the noise</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: #080a0c;
+  color: #d8d4cc;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* VARIABLES */
+:root {
+  --lime: #b4f032;
+  --lime-dim: #7aaa1a;
+  --border: #1a1c1f;
+  --surface: #0d0f11;
+  --text: #d8d4cc;
+  --muted: #4a4a46;
+  --tag-h: 20px;
+}
+
+/* â”€â”€â”€ NAV â”€â”€â”€ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 36px;
+  transition: background .3s, border-color .3s;
+  border-bottom: 1px solid transparent;
+}
+nav.stuck { background: rgba(8,10,12,.95); backdrop-filter: blur(12px); border-color: var(--border); }
+.n-logo { font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 500; letter-spacing: .22em; color: #fff; }
+.n-links { display: flex; gap: 32px; }
+.n-links a { font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color .2s; }
+.n-links a:hover { color: var(--text); }
+.n-btn {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .1em;
+  background: var(--lime); color: #000; border: none; cursor: pointer;
+  padding: 9px 20px; display: flex; align-items: center; gap: 10px;
+  font-weight: 500; transition: opacity .2s;
+}
+.n-btn:hover { opacity: .85; }
+
+/* â”€â”€â”€ HERO â”€â”€â”€ */
+.hero {
+  display: grid; grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  border-bottom: 1px solid var(--border);
+}
+
+/* LEFT */
+.hero-l {
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 0 52px 40px;
+}
+/* Full-bleed image placeholder */
+.hero-img-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, #060810 0%, #080c18 40%, #060810 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.hero-img-bg-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .12em;
+  color: #1a1e28; text-align: center; line-height: 2; position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%); white-space: nowrap;
+  border: 1px dashed #161820; padding: 16px 24px;
+}
+/* fake globe rings */
+.globe-ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(60,80,180,.08);
+  left: 50%; transform: translateX(-50%);
+}
+
+.hero-eyebrow {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--lime);
+  margin-bottom: 18px; position: relative; z-index: 2;
+  opacity: 0; animation: aUp .6s .1s forwards;
+}
+.hero-h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(80px, 9vw, 128px);
+  font-weight: 800; line-height: .93; letter-spacing: -.01em;
+  color: #ffffff; position: relative; z-index: 2;
+  opacity: 0; animation: aUp .6s .22s forwards;
+}
+.hero-h1-ul {
+  position: relative; display: inline-block;
+}
+.hero-h1-ul::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: -4px; height: 3px;
+  background: linear-gradient(90deg, var(--lime) 0%, transparent 100%);
+}
+.hero-tagline {
+  font-size: 15px; color: #555; margin-top: 24px;
+  position: relative; z-index: 2; line-height: 1.5;
+  opacity: 0; animation: aUp .6s .38s forwards;
+}
+
+/* RIGHT â€” cards */
+.hero-r {
+  display: flex; flex-direction: column;
+  border-left: 1px solid var(--border);
+  padding-top: 80px;
+}
+
+.acard {
+  display: grid; grid-template-columns: 110px 1fr 64px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background .18s;
+  min-height: 108px; position: relative;
+  opacity: 0;
+}
+.acard:nth-child(1) { animation: aIn .5s .5s forwards; }
+.acard:nth-child(2) { animation: aIn .5s .62s forwards; }
+.acard:nth-child(3) { animation: aIn .5s .74s forwards; }
+.acard:hover { background: rgba(255,255,255,.018); }
+
+/* thumbnail */
+.ac-thumb {
+  position: relative; overflow: hidden;
+  display: flex; align-items: flex-end;
+}
+.ac-thumb-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: .08em;
+  color: #1c1c20; padding: 6px; line-height: 1.4; position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; white-space: nowrap;
+}
+.ac-spark {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 48px; pointer-events: none;
+}
+/* mood BGs */
+.t-porsche { background: linear-gradient(140deg, #100610 0%, #1e0c16 100%); }
+.t-atlassian { background: linear-gradient(140deg, #040e12 0%, #081418 100%); }
+.t-figma { background: linear-gradient(140deg, #0c0814 0%, #14101e 100%); }
+
+.ac-body { padding: 14px 18px; display: flex; flex-direction: column; gap: 6px; }
+.ac-tag {
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .14em;
+  text-transform: uppercase; padding: 3px 7px; width: fit-content; line-height: 1;
+}
+.t-rev { background: rgba(220,70,70,.15); color: #d86060; }
+.t-brk { background: rgba(180,240,50,.12); color: var(--lime); }
+.t-acc { background: rgba(70,140,240,.15); color: #70aef0; }
+.t-pf  { background: rgba(180,240,50,.08); color: var(--lime-dim); border: 1px solid rgba(180,240,50,.18); }
+
+.ac-name { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; color: #fff; line-height: 1; }
+.ac-desc { font-size: 12px; color: #4a4a46; line-height: 1.35; }
+.ac-read { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #2e2e2a; margin-top: auto; }
+
+.ac-arr {
+  display: flex; align-items: center; justify-content: center;
+  border-left: 1px solid var(--border);
+}
+.ac-arr-circle {
+  width: 40px; height: 40px; border-radius: 50%; border: 1px solid #252525;
+  display: flex; align-items: center; justify-content: center;
+  color: #444; font-size: 16px; transition: border-color .2s, color .2s;
+}
+.acard:hover .ac-arr-circle { border-color: #555; color: #ccc; }
+.ac-arr-check { border-color: rgba(180,240,50,.3) !important; color: var(--lime) !important; }
+
+/* portfolio row */
+.pf-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px;
+  opacity: 0; animation: aIn .5s .88s forwards;
+}
+.pf-tag {
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .12em;
+  text-transform: uppercase; padding: 3px 8px;
+  background: rgba(180,240,50,.08); color: var(--lime-dim);
+  border: 1px solid rgba(180,240,50,.18);
+}
+.pf-text { font-size: 14px; color: #ccc; font-weight: 500; }
+.pf-sub { font-size: 11px; color: #404040; }
+.pf-chk {
+  margin-left: auto; width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid rgba(180,240,50,.3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--lime); font-size: 14px;
+}
+
+/* â”€â”€â”€ SECTION 2: ATTENTION â”€â”€â”€ */
+.s2 {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+}
+
+.s2-left {
+  padding: 56px 44px; border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 36px;
+}
+.s2-h {
+  font-family: 'Barlow Condensed', sans-serif; font-size: clamp(26px, 3vw, 38px);
+  font-weight: 700; line-height: 1.15; color: #fff;
+}
+.s2-h u {
+  text-decoration: underline; text-decoration-color: var(--lime);
+  text-underline-offset: 3px; text-decoration-thickness: 2px;
+}
+
+/* word cloud area */
+.wcloud {
+  flex: 1; display: flex; flex-wrap: wrap; gap: 6px;
+  align-content: flex-start; padding: 8px 0;
+  position: relative;
+}
+.wc {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  letter-spacing: .04em; padding: 4px 9px;
+  border: 1px solid #181818; color: #303030;
+  transition: color .6s, border-color .6s; cursor: default; white-space: nowrap;
+}
+.wc.lit { color: #555; border-color: #2a2a2a; }
+
+/* funnel beam lines */
+.wcloud-beam {
+  position: absolute; right: -44px; top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* kolo view card */
+.kv-card {
+  background: #0b140a; border: 1px solid #1e2e10;
+  padding: 22px 26px;
+}
+.kv-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .2em;
+  text-transform: uppercase; color: #3a5020; margin-bottom: 12px;
+}
+.kv-text {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 22px;
+  font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 14px;
+}
+.kv-bar { width: 36px; height: 3px; background: var(--lime); }
+
+/* s2 right */
+.s2-right { display: grid; grid-template-columns: 1fr 160px; }
+.s2-conviction { padding: 56px 36px; border-right: 1px solid var(--border); }
+.s2-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 28px; }
+
+.journey { display: flex; flex-direction: column; }
+.jrow {
+  display: flex; gap: 14px; padding: 12px 0;
+  border-bottom: 1px solid #0f1010; position: relative;
+}
+.jrow:last-child { border-bottom: none; }
+.jcol { display: flex; flex-direction: column; align-items: center; width: 18px; flex-shrink: 0; }
+.jdot {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 1px solid #252525; background: #080a0c; flex-shrink: 0; z-index: 1;
+}
+.jdot.red { border-color: #c04040; background: #c04040; }
+.jdot.lime { border-color: var(--lime); background: var(--lime); }
+.jline { width: 1px; flex: 1; background: #141414; margin: 3px 0; }
+.jtext { font-size: 13px; color: #bbb; padding-top: 1px; }
+.jsub { font-size: 11px; color: #383838; margin-top: 2px; }
+.jred { color: #c06060; }
+.jlime { color: #d8d4cc; }
+
+.s2-photo {
+  position: relative; overflow: hidden;
+  /* PLACEHOLDER: city skyline at night photo */
+  background: linear-gradient(170deg, #07080e 0%, #0c0d18 50%, #060710 100%);
+}
+.s2-photo-label {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .08em;
+  color: #141620; text-align: center; border: 1px dashed #141620; padding: 12px; white-space: nowrap;
+}
+.s2-callout {
+  position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 16px;
+  background: linear-gradient(0deg, rgba(6,7,10,.95) 0%, transparent 100%);
+}
+.s2-callout-lime { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--lime); line-height: 1.15; }
+.s2-callout-white { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: #fff; line-height: 1.15; }
+
+/* â”€â”€â”€ SECTION 3: DATA â”€â”€â”€ */
+.s3 {
+  display: grid; grid-template-columns: 220px 1fr 300px;
+  border-bottom: 1px solid var(--border);
+  background: #07080a;
+}
+
+/* PW */
+.pw {
+  padding: 32px 24px; border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+}
+.s3-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+.s3-sub { font-size: 11px; color: #383838; margin-bottom: 24px; }
+
+.hrow {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 0; border-bottom: 1px solid #0e0e0e;
+}
+.hrow:last-of-type { border-bottom: none; }
+.hlogo {
+  width: 30px; height: 30px; border-radius: 3px;
+  background: #111; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.hname { font-size: 13px; font-weight: 500; color: #ccc; line-height: 1.2; }
+.hthesis { font-size: 11px; color: #383838; }
+.hok {
+  margin-left: auto; width: 20px; height: 20px; border-radius: 50%;
+  border: 1px solid rgba(180,240,50,.28); color: var(--lime); font-size: 10px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.hwarn {
+  margin-left: auto; width: 20px; height: 20px; border-radius: 50%;
+  border: 1px solid rgba(220,130,60,.3); color: #d08040; font-size: 10px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.hreview {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .06em;
+  color: var(--lime); display: flex; align-items: center; gap: 4px; margin-top: 3px;
+  text-decoration: none;
+}
+
+/* ENGINE */
+.engine {
+  padding: 32px 36px; border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center;
+  background: #06070a;
+}
+.engine-hdr { align-self: flex-start; margin-bottom: 4px; }
+.engine-title-text { font-size: 14px; font-weight: 500; color: #ccc; }
+
+/* Funnel SVG */
+.funnel-svg-wrap { width: 100%; max-width: 320px; margin: 24px 0 20px; }
+
+/* engine stats */
+.estates { align-self: stretch; }
+.estat {
+  display: flex; align-items: baseline; gap: 14px;
+  padding: 9px 0 9px 14px; border-bottom: 1px solid #0e0e0e;
+  position: relative;
+}
+.estat::before {
+  content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 5px; height: 5px; border-radius: 50%;
+}
+.ep::before { background: #8050e0; }
+.eb::before { background: #4080d0; }
+.eg::before { background: #30b070; }
+.el::before { background: var(--lime); }
+.elb::before { background: var(--lime); box-shadow: 0 0 6px var(--lime); }
+.estat-num { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 700; color: #fff; line-height: 1; }
+.elb .estat-num { color: var(--lime); }
+.estat-lbl { font-size: 11px; color: #444; }
+
+/* SILENCE */
+.silence {
+  padding: 32px 28px;
+  display: flex; flex-direction: column;
+}
+.sil-divider { border-top: 1px solid var(--border); margin: 20px 0; }
+.sil-big { font-family: 'Barlow Condensed', sans-serif; font-size: 80px; font-weight: 800; color: var(--lime); line-height: .95; letter-spacing: -.03em; margin-bottom: 6px; }
+.sil-lbl { font-size: 12px; color: #444; }
+.sil-grid { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border); }
+.sil-cell { padding: 16px; }
+.sil-cell + .sil-cell { border-left: 1px solid var(--border); }
+.sil-num { font-family: 'Barlow Condensed', sans-serif; font-size: 40px; font-weight: 800; color: #fff; line-height: 1; }
+.sil-num-pct { font-family: 'Barlow Condensed', sans-serif; font-size: 30px; font-weight: 800; color: #fff; line-height: 1; }
+.sil-cell-lbl { font-size: 11px; color: #404040; margin-top: 2px; }
+
+/* waveform */
+.waveform { display: flex; align-items: flex-end; gap: 1.5px; height: 36px; margin-top: 16px; }
+.wfb { flex: 1; background: var(--lime); opacity: .18; border-radius: 1px; transition: height .4s, opacity .4s; min-height: 2px; }
+.wfb.on { opacity: .65; }
+
+/* â”€â”€â”€ SECTION 4: INTELLIGENCE â”€â”€â”€ */
+.s4 {
+  display: grid; grid-template-columns: 260px 1fr;
+  border-bottom: 1px solid var(--border);
+}
+.s4-left {
+  padding: 52px 36px; border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.s4-h {
+  font-family: 'Barlow Condensed', sans-serif; font-size: clamp(40px, 4vw, 58px);
+  font-weight: 800; color: #fff; line-height: 1; margin-bottom: 16px;
+}
+.s4-sub { font-size: 13px; color: #444; line-height: 1.6; max-width: 220px; margin-bottom: 28px; }
+.s4-link {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .1em;
+  color: var(--lime); text-decoration: none; display: flex; align-items: center; gap: 6px;
+  transition: opacity .2s;
+}
+.s4-link:hover { opacity: .7; }
+
+.arch-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+.arch {
+  border-left: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  cursor: pointer; transition: background .18s;
+}
+.arch:hover { background: rgba(255,255,255,.015); }
+
+.arch-thumb {
+  height: 190px; position: relative; overflow: hidden;
+  display: flex; align-items: flex-end;
+}
+/* PLACEHOLDERS â€” replace with real images */
+.at-porsche  { background: linear-gradient(155deg, #0c040c 0%, #180a14 60%, #0a0306 100%); }
+.at-atlassian{ background: linear-gradient(155deg, #030c10 0%, #061216 60%, #020a0e 100%); }
+.at-figma    { background: linear-gradient(155deg, #08040e 0%, #100c1a 60%, #060210 100%); }
+.at-asml     { background: linear-gradient(155deg, #080604 0%, #120e08 60%, #0a0804 100%); }
+.at-placeholder {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: .08em;
+  color: #161618; text-align: center; padding: 8px;
+}
+
+.arch-body { padding: 18px; display: flex; flex-direction: column; flex: 1; }
+.arch-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.arch-co { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #3a3a36; }
+.arch-title { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; color: #fff; line-height: 1.2; flex: 1; }
+.arch-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: auto; padding-top: 14px; border-top: 1px solid #0e0e0e;
+}
+.arch-read { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #2c2c28; }
+.arch-arrow {
+  width: 28px; height: 28px; border-radius: 50%; border: 1px solid #1e1e1e;
+  display: flex; align-items: center; justify-content: center; color: #333; font-size: 12px;
+  transition: border-color .2s, color .2s;
+}
+.arch:hover .arch-arrow { border-color: #444; color: #aaa; }
+
+/* â”€â”€â”€ FOOTER â”€â”€â”€ */
+footer {
+  padding: 28px 36px; display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid #0e0e0e;
+}
+.f-logo { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .22em; color: #2a2a26; }
+.f-links { display: flex; gap: 28px; }
+.f-links a { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: #2a2a26; text-decoration: none; transition: color .2s; }
+.f-links a:hover { color: #555; }
+
+/* â”€â”€â”€ KEYFRAMES â”€â”€â”€ */
+@keyframes aUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes aIn { from { opacity: 0; } to { opacity: 1; } }
+
+.rv { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+.rv.in { opacity: 1; transform: translateY(0); }
+
+
+/* â”€â”€â”€ REFERENCE MATCH PASS: imagery, typography, spacing â”€â”€â”€ */
+:root {
+  --lime: #b6ff2e;
+  --lime-dim: #8ed021;
+  --border: rgba(140, 170, 190, .18);
+  --surface: #081622;
+  --surface-2: #0b1a27;
+  --text: #f2f4ee;
+  --muted: #7c8792;
+  --panel-line: rgba(255,255,255,.06);
+}
+
+body {
+  background:
+    radial-gradient(circle at 72% 3%, rgba(43, 91, 150, .12), transparent 32%),
+    radial-gradient(circle at 18% 28%, rgba(132, 77, 255, .08), transparent 26%),
+    #050b12;
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: .09;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.28) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 70% 30%, rgba(182,255,46,.18) 0 1px, transparent 1.4px);
+  background-size: 180px 180px, 260px 260px;
+  mix-blend-mode: screen;
+}
+
+nav {
+  padding: 16px 36px;
+  background: linear-gradient(180deg, rgba(5,11,18,.72), rgba(5,11,18,0));
+}
+nav.stuck { background: rgba(5,11,18,.88); border-color: var(--border); }
+.n-logo {
+  font-family: 'Inter', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: .34em;
+  color: #fff;
+}
+.n-links { gap: 44px; }
+.n-links a {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  color: rgba(242,244,238,.86);
+}
+.n-links a:first-child { color: #fff; position: relative; }
+.n-links a:first-child::after {
+  content: '';
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  left: 50%;
+  bottom: -14px;
+  border-radius: 999px;
+  background: var(--lime);
+  box-shadow: 0 0 12px var(--lime);
+}
+.n-btn {
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  box-shadow: 0 0 24px rgba(182,255,46,.25);
+}
+
+.hero {
+  min-height: 680px;
+  background: #050b12;
+  border-bottom: 1px solid var(--border);
+}
+.hero-l { padding: 0 40px 58px 36px; }
+.hero-r {
+  padding: 86px 28px 26px;
+  gap: 10px;
+  border-left: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(8,22,34,.34), rgba(5,11,18,.88));
+}
+.hero-img-bg {
+  background:
+    linear-gradient(90deg, rgba(5,11,18,.84) 0%, rgba(5,11,18,.42) 38%, rgba(5,11,18,.12) 100%),
+    linear-gradient(180deg, rgba(5,11,18,.06) 0%, rgba(5,11,18,.14) 48%, rgba(5,11,18,.88) 100%),
+    url('assets/earth-horizon-data-beams.png') center bottom / cover no-repeat;
+}
+.hero-img-bg-label, .globe-ring { display: none !important; }
+.hero-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  color: var(--lime);
+  margin-bottom: 16px;
+}
+.hero-h1 {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(76px, 8.4vw, 118px);
+  font-weight: 700;
+  line-height: .9;
+  letter-spacing: -.065em;
+  color: #fff;
+  text-shadow: 0 12px 56px rgba(0,0,0,.6);
+}
+.hero-h1-ul::after {
+  height: 20px;
+  left: -2px;
+  right: -2px;
+  bottom: -15px;
+  background: url('assets/lime-brush-underline.png') center / 100% 100% no-repeat;
+  filter: drop-shadow(0 0 12px rgba(182,255,46,.72));
+}
+.hero-tagline {
+  margin-top: 38px;
+  color: rgba(242,244,238,.88);
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.acard {
+  grid-template-columns: 164px 1fr 62px;
+  min-height: 116px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(11,26,39,.86), rgba(5,11,18,.92));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 18px 50px rgba(0,0,0,.22);
+}
+.acard + .acard { margin-top: 0; }
+.acard:hover { background: linear-gradient(135deg, rgba(14,32,48,.95), rgba(5,11,18,.96)); }
+.ac-thumb { background-size: cover !important; background-position: center !important; }
+.ac-thumb-label { display: none !important; }
+.ac-thumb::after, .arch-thumb::after, .s2-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.42));
+  pointer-events: none;
+}
+.t-porsche { background-image: url('assets/porsche-purple-ev-rear.png'); }
+.t-atlassian { background-image: url('assets/atlassian-lime-building.png'); }
+.t-figma { background-image: url('assets/figma-neon-building.png'); }
+.ac-spark { opacity: 0; }
+.ac-body { padding: 16px 18px; gap: 6px; }
+.ac-tag {
+  border-radius: 999px;
+  font-family: 'Inter', sans-serif;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  padding: 5px 9px;
+}
+.t-rev { background: rgba(138,77,255,.8); color: #fff; }
+.t-brk { background: rgba(182,255,46,.22); color: var(--lime); }
+.t-acc { background: rgba(35,140,255,.75); color: #fff; }
+.t-pf { background: rgba(255,138,40,.12); color: #ff9b42; border-color: rgba(255,138,40,.34); }
+.ac-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 21px;
+  font-weight: 650;
+  letter-spacing: -.04em;
+}
+.ac-desc { color: rgba(242,244,238,.74); font-size: 12px; line-height: 1.28; max-width: 190px; }
+.ac-read { color: rgba(184,194,204,.62); font-size: 10px; }
+.ac-arr { border-left: none; }
+.ac-arr-circle {
+  width: 38px;
+  height: 38px;
+  border-color: rgba(255,255,255,.45);
+  color: #fff;
+  background: rgba(255,255,255,.03);
+}
+.pf-row {
+  margin-top: 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(11,26,39,.72), rgba(5,11,18,.92));
+}
+.pf-text { color: #fff; font-size: 15px; }
+.pf-sub { color: rgba(184,194,204,.62); }
+
+.s2 {
+  background: #050b12;
+  border-bottom: 1px solid var(--border);
+}
+.s2-left {
+  position: relative;
+  min-height: 410px;
+  padding: 54px 38px;
+  border-right: 1px solid var(--border);
+  background: radial-gradient(circle at 84% 58%, rgba(182,255,46,.13), transparent 22%);
+}
+.s2-h {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(28px, 3.1vw, 42px);
+  font-weight: 650;
+  letter-spacing: -.06em;
+  line-height: 1.06;
+  max-width: 560px;
+}
+.s2-h u { text-decoration-color: var(--lime); text-decoration-thickness: 3px; }
+.wcloud {
+  min-height: 270px;
+  margin-top: 18px;
+  background:
+    linear-gradient(90deg, rgba(5,11,18,.16), rgba(5,11,18,.02) 54%, rgba(5,11,18,.18)),
+    url('assets/information-noise-particle-funnel.png') center / cover no-repeat;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: inset 0 0 60px rgba(5,11,18,.4);
+}
+.wcloud .wc { display: none; }
+.kv-card {
+  position: absolute;
+  right: 38px;
+  bottom: 46px;
+  width: 285px;
+  border-radius: 14px;
+  background: rgba(9,22,12,.83);
+  border: 1px solid rgba(182,255,46,.28);
+  box-shadow: 0 0 38px rgba(182,255,46,.08), inset 0 1px 0 rgba(255,255,255,.04);
+}
+.kv-label { color: rgba(242,244,238,.74); }
+.kv-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 21px;
+  font-weight: 550;
+  letter-spacing: -.045em;
+}
+.kv-bar { background: var(--lime); height: 4px; width: 42px; box-shadow: 0 0 12px rgba(182,255,46,.6); }
+
+.s2-right { grid-template-columns: minmax(300px, 1fr) minmax(260px, .82fr); }
+.s2-conviction { padding: 54px 36px; border-right: 1px solid var(--border); }
+.s2-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -.04em;
+}
+.jtext { color: rgba(242,244,238,.86); }
+.jsub { color: rgba(184,194,204,.48); }
+.jdot { border-color: rgba(184,194,204,.55); background: #050b12; }
+.jline { background: rgba(184,194,204,.28); }
+.jdot.red { border-color: rgba(184,194,204,.55); background: #050b12; }
+.jred { color: rgba(242,244,238,.86); }
+.jdot.lime { box-shadow: 0 0 18px var(--lime); }
+.s2-photo {
+  background:
+    linear-gradient(90deg, rgba(5,11,18,.34), rgba(5,11,18,.04)),
+    url('assets/office-silhouette-night.png') center / cover no-repeat;
+}
+.s2-photo-label { display:none !important; }
+.s2-callout { z-index: 1; }
+.s2-callout-lime, .s2-callout-white {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -.04em;
+}
+.s2-callout-lime { color: var(--lime); }
+
+.s3 {
+  grid-template-columns: 280px minmax(390px, 1fr) 340px;
+  background: #050b12;
+  border-bottom: 1px solid var(--border);
+}
+.pw, .engine, .silence { background: linear-gradient(180deg, rgba(8,22,34,.54), rgba(5,11,18,.96)); }
+.pw, .engine { border-right: 1px solid var(--border); }
+.s3-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -.04em;
+}
+.s3-sub { color: rgba(184,194,204,.5); }
+.hrow { border-bottom-color: rgba(255,255,255,.06); }
+.hname { color: rgba(242,244,238,.9); }
+.hthesis { color: rgba(184,194,204,.5); }
+.engine-title-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -.04em;
+  color: #fff;
+}
+.funnel-svg-wrap {
+  width: 100%;
+  max-width: 390px;
+  height: 330px;
+  margin: 18px 0 8px;
+  background: url('assets/market-compression-engine-funnel.png') center / contain no-repeat;
+  filter: drop-shadow(0 0 28px rgba(35,140,255,.16));
+}
+.funnel-svg-wrap svg { display: none; }
+.estat { border-bottom-color: rgba(255,255,255,.06); }
+.estat-num {
+  font-family: 'Inter', sans-serif;
+  font-size: 27px;
+  font-weight: 650;
+  letter-spacing: -.04em;
+}
+.estat-lbl { color: rgba(184,194,204,.58); }
+.sil-big {
+  font-family: 'Inter', sans-serif;
+  font-size: 86px;
+  font-weight: 500;
+  color: var(--lime);
+  letter-spacing: -.07em;
+  text-shadow: 0 0 28px rgba(182,255,46,.18);
+}
+.sil-lbl, .sil-cell-lbl { color: rgba(184,194,204,.58); }
+.sil-num, .sil-num-pct {
+  font-family: 'Inter', sans-serif;
+  font-weight: 650;
+  letter-spacing: -.05em;
+}
+.waveform { height: 46px; }
+.wfb { background: var(--lime); box-shadow: 0 0 10px rgba(182,255,46,.16); }
+
+.s4 {
+  grid-template-columns: 260px 1fr;
+  background: #050b12;
+}
+.s4-left { border-right: 1px solid var(--border); }
+.s4-h {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(34px, 4vw, 58px);
+  font-weight: 650;
+  letter-spacing: -.07em;
+  line-height: .98;
+}
+.s4-sub { color: rgba(184,194,204,.72); }
+.s4-link { color: #9b6cff; }
+.arch-grid {
+  gap: 18px;
+  padding: 26px 22px;
+  background: linear-gradient(180deg, rgba(8,22,34,.22), rgba(5,11,18,.9));
+}
+.arch {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(11,26,39,.7), rgba(5,11,18,.96));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 18px 60px rgba(0,0,0,.2);
+}
+.arch + .arch { border-left: 1px solid var(--border); }
+.arch-thumb {
+  height: 220px;
+  background-size: cover !important;
+  background-position: center !important;
+}
+.at-porsche { background-image: url('assets/porsche-archive-crop.png'); }
+.at-atlassian { background-image: url('assets/atlassian-archive-crop.png'); }
+.at-figma { background-image: url('assets/figma-archive-crop.png'); }
+.at-asml { background-image: url('assets/asml-archive-crop.png'); }
+.at-placeholder { display:none !important; }
+.arch-body { padding: 18px; min-height: 170px; }
+.arch-co {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  color: rgba(242,244,238,.64);
+}
+.arch-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 560;
+  letter-spacing: -.045em;
+  line-height: 1.28;
+}
+.arch-foot { border-top-color: rgba(255,255,255,.06); }
+.arch-read { color: rgba(184,194,204,.6); }
+.arch-arrow { border-color: rgba(255,255,255,.3); color: #fff; }
+
+footer { background: #050b12; border-top: 1px solid var(--border); }
+
+@media (max-width: 980px) {
+  .hero, .s2, .s4 { grid-template-columns: 1fr; }
+  .hero-r, .s2-left, .s2-conviction, .pw, .engine { border-left: 0; border-right: 0; }
+  .s3 { grid-template-columns: 1fr; }
+  .s2-right { grid-template-columns: 1fr; }
+  .s2-photo { min-height: 320px; }
+  .arch-grid { grid-template-columns: 1fr 1fr; }
+  .kv-card { position: relative; right:auto; bottom:auto; margin-left:auto; margin-top:-95px; }
+}
+
+@media (max-width: 640px) {
+  nav { padding: 14px 18px; }
+  .n-links { display:none; }
+  .hero-l { min-height: 560px; padding-left: 22px; padding-right: 22px; }
+  .hero-h1 { font-size: 72px; }
+  .acard { grid-template-columns: 120px 1fr 54px; }
+  .arch-grid { grid-template-columns: 1fr; }
+  .kv-card { width: 100%; margin-top: 16px; }
+}
+
+
+/* â”€â”€â”€ USER REQUESTED EDITS â”€â”€â”€ */
+
+/* Kolo View card: move whole card 30px up and make main copy 2px smaller */
+.kv-card {
+  bottom: 76px;
+}
+.kv-text {
+  font-size: 19px;
+}
+
+/* Use the office photo as the full background for the whole Why conviction breaks panel */
+.s2-right {
+  position: relative;
+  display: block;
+  min-height: 430px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(5,11,18,.88) 0%, rgba(5,11,18,.66) 46%, rgba(5,11,18,.24) 100%),
+    linear-gradient(0deg, rgba(5,11,18,.88) 0%, rgba(5,11,18,.12) 48%, rgba(5,11,18,.3) 100%),
+    url('assets/office-silhouette-night.png') center / cover no-repeat;
+}
+
+.s2-conviction {
+  position: relative;
+  z-index: 2;
+  width: min(62%, 520px);
+  min-height: 430px;
+  border-right: 0;
+  background: linear-gradient(90deg, rgba(5,11,18,.55), rgba(5,11,18,.08));
+}
+
+.s2-photo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: none !important;
+  min-height: 0;
+  pointer-events: none;
+}
+
+.s2-photo::after {
+  background:
+    linear-gradient(90deg, rgba(5,11,18,.24), rgba(5,11,18,0) 54%),
+    linear-gradient(0deg, rgba(5,11,18,.92), rgba(5,11,18,0) 46%);
+}
+
+.s2-callout {
+  left: 36px;
+  right: auto;
+  bottom: 30px;
+  width: min(420px, 55%);
+  z-index: 3;
+  background: none;
+  padding: 0;
+}
+
+/* Replace the Market Compression Engine panel content with the uploaded full image */
+.engine {
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  overflow: hidden;
+  background: #050b12;
+}
+
+.engine-full-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  object-fit: cover;
+  object-position: center;
+  border: 0;
+}
+
+/* Keep the requested edits responsive */
+@media (max-width: 980px) {
+  .s2-right {
+    min-height: 560px;
+  }
+
+  .s2-conviction {
+    width: 100%;
+    min-height: 420px;
+  }
+
+  .s2-callout {
+    width: calc(100% - 72px);
+  }
+
+  .kv-card {
+    bottom: auto;
+    transform: translateY(-30px);
+  }
+
+  .engine-full-img {
+    min-height: 420px;
+  }
+}
+
+
+/* Move hero headline block up by 40px */
+.hero-l {
+  padding-bottom: 98px;
+}
+
+.kolo-home-link{position:fixed;right:18px;bottom:18px;z-index:10000;display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;padding:0;border:1px solid rgba(180,240,50,.34);border-radius:999px;background:rgba(8,10,12,.62);color:var(--lime);text-decoration:none;box-shadow:0 18px 46px rgba(0,0,0,.32);backdrop-filter:blur(14px);transition:transform .2s,border-color .2s,background .2s}
+.kolo-home-link svg{width:19px;height:19px;stroke:currentColor}
+.kolo-home-link:hover{transform:translateY(-2px);border-color:rgba(180,240,50,.65);background:rgba(8,10,12,.84)}
+@media(max-width:560px){.kolo-home-link{right:12px;bottom:12px}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="n-logo" href="https://moeessah.github.io/kolo/" aria-label="Kolo home">KOLO</a>
+  <div class="n-links">
+    <a href="#">This Week</a>
+    <a href="#">Portfolio Watch</a>
+    <a href="#">Archive</a>
+    <a href="#">Method</a>
+  </div>
+  <button class="n-btn">ACCESS</button>
+</nav>
+
+<!-- â•â•â•â•â•â• HERO â•â•â•â•â•â• -->
+<section class="hero">
+
+  <!-- LEFT -->
+  <div class="hero-l">
+    <!-- FULL-BLEED BACKGROUND IMAGE PLACEHOLDER -->
+    <!-- Replace .hero-img-bg with: <img src="your-earth-image.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0"> -->
+    <div class="hero-img-bg">
+      <div class="hero-img-bg-label">[ REPLACE WITH EARTH / GLOBE<br>NIGHT-LIGHTS HERO IMAGE ]</div>
+      <!-- decorative fake globe rings -->
+      <div class="globe-ring" style="width:500px;height:500px;bottom:-340px;"></div>
+      <div class="globe-ring" style="width:420px;height:420px;bottom:-300px;opacity:.5;"></div>
+      <div class="globe-ring" style="width:340px;height:340px;bottom:-260px;opacity:.3;"></div>
+    </div>
+    <!-- gradient overlay so text reads over image -->
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,10,12,.7) 0%,rgba(8,10,12,.1) 100%);z-index:1;pointer-events:none;"></div>
+
+    <p class="hero-eyebrow">Wednesday, June 3</p>
+    <h1 class="hero-h1">
+      What<br>
+      <span class="hero-h1-ul">changed?</span>
+    </h1>
+    <p class="hero-tagline">Three companies worth paying attention to.<br>One you're already watching.</p>
+  </div>
+
+  <!-- RIGHT â€” article cards -->
+  <div class="hero-r">
+
+    <!-- CARD 1 -->
+    <div class="acard">
+      <div class="ac-thumb t-porsche">
+        <!-- PLACEHOLDER: Porsche dark moody car image -->
+        <div class="ac-thumb-label">[ Porsche image ]</div>
+        <div class="ac-spark">
+          <svg viewBox="0 0 110 48" preserveAspectRatio="none" width="100%" height="100%">
+            <polyline points="0,38 18,34 30,40 45,24 58,30 72,10 85,18 110,14"
+              fill="none" stroke="#8050c0" stroke-width="1.5" opacity=".75"/>
+          </svg>
+        </div>
+      </div>
+      <div class="ac-body">
+        <span class="ac-tag t-rev">Reversal</span>
+        <div class="ac-name">Porsche</div>
+        <div class="ac-desc">The market still thinks this is an EV story.</div>
+        <div class="ac-read">12 min read</div>
+      </div>
+      <div class="ac-arr"><div class="ac-arr-circle"></div></div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="acard">
+      <div class="ac-thumb t-atlassian">
+        <!-- PLACEHOLDER: Atlassian / glass building image -->
+        <div class="ac-thumb-label">[ Atlassian image ]</div>
+        <div class="ac-spark">
+          <svg viewBox="0 0 110 48" preserveAspectRatio="none" width="100%" height="100%">
+            <polyline points="0,40 15,36 28,30 42,22 56,16 70,10 88,6 110,2"
+              fill="none" stroke="#a0e040" stroke-width="1.5" opacity=".75"/>
+          </svg>
+        </div>
+      </div>
+      <div class="ac-body">
+        <span class="ac-tag t-brk">Breakout</span>
+        <div class="ac-name">Atlassian</div>
+        <div class="ac-desc">AI revenue is appearing faster than expected.</div>
+        <div class="ac-read">10 min read</div>
+      </div>
+      <div class="ac-arr"><div class="ac-arr-circle"></div></div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="acard">
+      <div class="ac-thumb t-figma">
+        <!-- PLACEHOLDER: Figma / abstract purple tech photo -->
+        <div class="ac-thumb-label">[ Figma image ]</div>
+        <div class="ac-spark">
+          <svg viewBox="0 0 110 48" preserveAspectRatio="none" width="100%" height="100%">
+            <polyline points="0,36 15,32 28,34 42,22 56,18 70,14 88,10 110,6"
+              fill="none" stroke="#5090e0" stroke-width="1.5" opacity=".75"/>
+          </svg>
+        </div>
+      </div>
+      <div class="ac-body">
+        <span class="ac-tag t-acc">Acceleration</span>
+        <div class="ac-name">Figma</div>
+        <div class="ac-desc">Growth is re-accelerating.</div>
+        <div class="ac-read">8 min read</div>
+      </div>
+      <div class="ac-arr"><div class="ac-arr-circle"></div></div>
+    </div>
+
+    <!-- PORTFOLIO ROW -->
+    <div class="pf-row">
+      <span class="pf-tag">Your Portfolio</span>
+      <div>
+        <div class="pf-text">4 holdings monitored</div>
+        <div class="pf-sub">Nothing important changed.</div>
+      </div>
+      <div class="pf-chk">&#10003;</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- â•â•â•â•â•â• SECTION 2: ATTENTION â•â•â•â•â•â• -->
+<section class="s2">
+
+  <div class="s2-left rv">
+    <h2 class="s2-h">
+      Most investors don't have<br>
+      an information problem.<br>
+      They have an <u>attention</u> problem.
+    </h2>
+
+    <div class="wcloud" id="wc">
+      <span class="wc">Earnings</span>
+      <span class="wc lit">Analyst notes</span>
+      <span class="wc">Gross</span>
+      <span class="wc lit">Inflation data</span>
+      <span class="wc">Tweets</span>
+      <span class="wc">Podcasts</span>
+      <span class="wc">Upgrades</span>
+      <span class="wc lit">Disruptions</span>
+      <span class="wc">Rumours</span>
+      <span class="wc">Market chatter</span>
+      <span class="wc">Downgrades</span>
+      <span class="wc lit">Revenues</span>
+      <span class="wc">Guidance</span>
+      <span class="wc">Macro data</span>
+      <span class="wc">Newsletter chatter</span>
+      <span class="wc">Buybacks</span>
+      <span class="wc">Options flow</span>
+      <span class="wc">Job reports</span>
+      <span class="wc">TikTok</span>
+    </div>
+
+    <div class="kv-card">
+      <div class="kv-label">Kolo View</div>
+      <div class="kv-text">Porsche's failed EV strategy is already reflected in valuation.</div>
+      <div class="kv-bar"></div>
+    </div>
+  </div>
+
+  <div class="s2-right">
+    <div class="s2-conviction rv" style="transition-delay:.1s">
+      <div class="s2-title">Why conviction breaks.</div>
+      <div class="journey">
+        <div class="jrow">
+          <div class="jcol"><div class="jdot" style="border-color:#555;background:#333;"></div><div class="jline"></div></div>
+          <div><div class="jtext">Buys Nvidia</div><div class="jsub">Reason: AI infrastructure demand</div></div>
+        </div>
+        <div class="jrow">
+          <div class="jcol"><div class="jdot"></div><div class="jline"></div></div>
+          <div class="jtext">Reads recession headline</div>
+        </div>
+        <div class="jrow">
+          <div class="jcol"><div class="jdot"></div><div class="jline"></div></div>
+          <div class="jtext">Reads analyst downgrade</div>
+        </div>
+        <div class="jrow">
+          <div class="jcol"><div class="jdot"></div><div class="jline"></div></div>
+          <div class="jtext">Reads Twitter panic</div>
+        </div>
+        <div class="jrow">
+          <div class="jcol"><div class="jdot red"></div><div class="jline"></div></div>
+          <div class="jtext jred">Sells</div>
+        </div>
+        <div class="jrow">
+          <div class="jcol"><div class="jdot lime"></div></div>
+          <div class="jtext jlime">Nothing about the original thesis changed.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="s2-photo">
+      <!-- PLACEHOLDER: moody city skyline night photo (man silhouetted) -->
+      <div class="s2-photo-label">[ City night<br>skyline photo ]</div>
+      <div class="s2-callout">
+        <div class="s2-callout-lime">This happens every day.</div>
+        <div class="s2-callout-white">Kolo exists for that moment.</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- â•â•â•â•â•â• SECTION 3: DATA â•â•â•â•â•â• -->
+<section class="s3">
+
+  <!-- PORTFOLIO WATCH -->
+  <div class="pw rv">
+    <div class="s3-title">Portfolio Watch</div>
+    <div class="s3-sub">Live monitor of your holdings</div>
+
+    <div class="hrow">
+      <div class="hlogo">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <rect x="1" y="1" width="7" height="7" fill="#777"/>
+          <rect x="10" y="1" width="7" height="7" fill="#777" opacity=".6"/>
+          <rect x="1" y="10" width="7" height="7" fill="#777" opacity=".6"/>
+          <rect x="10" y="10" width="7" height="7" fill="#777"/>
+        </svg>
+      </div>
+      <div><div class="hname">Microsoft</div><div class="hthesis">Thesis intact</div></div>
+      <div class="hok">&#10003;</div>
+    </div>
+
+    <div class="hrow">
+      <div class="hlogo" style="background:#0c1640">
+        <svg width="22" height="13" viewBox="0 0 22 13">
+          <rect width="22" height="13" rx="2" fill="#1434a4"/>
+          <text x="11" y="9.5" text-anchor="middle" fill="white" font-size="5.5" font-family="sans-serif" font-weight="900" letter-spacing=".5">VISA</text>
+        </svg>
+      </div>
+      <div><div class="hname">Visa</div><div class="hthesis">Thesis intact</div></div>
+      <div class="hok">&#10003;</div>
+    </div>
+
+    <div class="hrow">
+      <div class="hlogo" style="background:#160a06">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M4 4L10 10L4 16M10 4L16 10L10 16" stroke="#e0381a" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div><div class="hname">Adobe</div><div class="hthesis">Thesis intact</div></div>
+      <div class="hok">&#10003;</div>
+    </div>
+
+    <div class="hrow" style="flex-direction:column;align-items:flex-start;gap:4px">
+      <div style="display:flex;align-items:center;gap:10px;width:100%">
+        <div class="hlogo" style="background:#14100a">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2L18 18L10 14.5L2 18Z" fill="#c09820" opacity=".85"/>
+          </svg>
+        </div>
+        <div style="flex:1"><div class="hname">Porsche</div><div class="hthesis">New CEO changes assumptions</div></div>
+        <div class="hwarn">!</div>
+      </div>
+      <a class="hreview" href="#" style="padding-left:40px">Review update </a>
+    </div>
+  </div>
+
+  <!-- COMPRESSION ENGINE -->
+  <div class="engine rv" style="transition-delay:.1s">
+    <img class="engine-full-img" src="assets/market-compression-engine-full.png" alt="The Market Compression Engine">
+  </div>
+
+  <!-- SILENCE INDEX -->
+  <div class="silence rv" style="transition-delay:.2s">
+    <div class="s3-title">The Silence Index&trade;</div>
+    <div class="sil-divider"></div>
+    <div class="sil-big" id="silNum">9,482</div>
+    <div class="sil-lbl" style="margin-bottom:20px">Market headlines ignored</div>
+    <div class="sil-grid">
+      <div class="sil-cell">
+        <div class="sil-num">3</div>
+        <div class="sil-cell-lbl">Worth reading</div>
+      </div>
+      <div class="sil-cell">
+        <div class="sil-num-pct">99.97%</div>
+        <div class="sil-cell-lbl">Noise removed</div>
+      </div>
+    </div>
+    <div class="waveform" id="wf"></div>
+  </div>
+
+</section>
+
+<!-- â•â•â•â•â•â• SECTION 4: INTELLIGENCE â•â•â•â•â•â• -->
+<section class="s4">
+  <div class="s4-left rv">
+    <div>
+      <h2 class="s4-h">Intelligence,<br>not noise.</h2>
+      <p class="s4-sub">Short, high-conviction briefs on narrative shifts that matter over the next 6-12 months.</p>
+    </div>
+    <a href="#" class="s4-link">Browse archive </a>
+  </div>
+
+  <div class="arch-grid">
+
+    <div class="arch">
+      <div class="arch-thumb at-porsche">
+        <!-- PLACEHOLDER: moody Porsche at night -->
+        <div class="at-placeholder">[ Porsche<br>image ]</div>
+      </div>
+      <div class="arch-body">
+        <div class="arch-top">
+          <span class="arch-co">Porsche</span>
+          <span class="ac-tag t-rev">Reversal</span>
+        </div>
+        <div class="arch-title">Strategic reset under new leadership.</div>
+        <div class="arch-foot">
+          <span class="arch-read">12 min read</span>
+          <div class="arch-arrow"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch">
+      <div class="arch-thumb at-atlassian">
+        <!-- PLACEHOLDER: Atlassian building -->
+        <div class="at-placeholder">[ Atlassian<br>image ]</div>
+      </div>
+      <div class="arch-body">
+        <div class="arch-top">
+          <span class="arch-co">Atlassian</span>
+          <span class="ac-tag t-brk">Breakout</span>
+        </div>
+        <div class="arch-title">Rovo ARR suggests a second growth engine.</div>
+        <div class="arch-foot">
+          <span class="arch-read">10 min read</span>
+          <div class="arch-arrow"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch">
+      <div class="arch-thumb at-figma">
+        <!-- PLACEHOLDER: Figma abstract -->
+        <div class="at-placeholder">[ Figma<br>image ]</div>
+      </div>
+      <div class="arch-body">
+        <div class="arch-top">
+          <span class="arch-co">Figma</span>
+          <span class="ac-tag t-acc">Acceleration</span>
+        </div>
+        <div class="arch-title">Growth re-accelerating. Margins expanding.</div>
+        <div class="arch-foot">
+          <span class="arch-read">8 min read</span>
+          <div class="arch-arrow"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch">
+      <div class="arch-thumb at-asml">
+        <!-- PLACEHOLDER: ASML factory / chip fab -->
+        <div class="at-placeholder">[ ASML<br>image ]</div>
+      </div>
+      <div class="arch-body">
+        <div class="arch-top">
+          <span class="arch-co">ASML</span>
+          <span class="ac-tag t-pf">Watchlist</span>
+        </div>
+        <div class="arch-title">AI capex cycle remains structurally intact.</div>
+        <div class="arch-foot">
+          <span class="arch-read">9 min read</span>
+          <div class="arch-arrow"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">KOLO</div>
+  <div class="f-links">
+    <a href="#">This Week</a>
+    <a href="#">Archive</a>
+    <a href="#">Method</a>
+    <a href="#">Privacy</a>
+  </div>
+</footer>
+
+<script>
+// Nav stuck
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('stuck', scrollY > 20), {passive:true});
+
+// Scroll reveal
+const rvEls = document.querySelectorAll('.rv');
+const obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); } }), {threshold:.08});
+rvEls.forEach(el => obs.observe(el));
+
+// Word cloud shimmer
+const words = [...document.querySelectorAll('.wc')];
+setInterval(() => {
+  words.forEach(w => w.classList.remove('lit'));
+  const n = Math.floor(Math.random()*5)+3;
+  words.sort(()=>Math.random()-.5).slice(0,n).forEach(w=>w.classList.add('lit'));
+}, 1600);
+
+// Waveform build
+const wfEl = document.getElementById('wf');
+const wfH = [3,6,12,18,26,32,22,14,20,28,36,26,16,10,18,24,30,22,12,8,16,28,24,18,14,20,30,26,16,9,22,28,24,18,12,16,22,30,26,14,8,14,20,26,30,22,14,10,18,26,32,24,16,10,6,14,20,26,22,14];
+wfH.forEach(h => {
+  const b = document.createElement('div');
+  b.className = 'wfb' + (h > 20 ? ' on' : '');
+  b.style.height = h+'px';
+  wfEl.appendChild(b);
+});
+const wfBars = wfEl.querySelectorAll('.wfb');
+setInterval(() => {
+  wfBars.forEach(b => b.classList.remove('on'));
+  const n = Math.floor(Math.random()*18)+8;
+  for(let i=0;i<n;i++) {
+    const r = wfBars[Math.floor(Math.random()*wfBars.length)];
+    if(r) r.classList.add('on');
+  }
+}, 700);
+
+// Silence number count-up
+const silEl = document.getElementById('silNum');
+let done = false;
+new IntersectionObserver(([e]) => {
+  if(e.isIntersecting && !done) {
+    done = true;
+    const target = 9482, dur = 1400, t0 = performance.now();
+    const tick = now => {
+      const p = Math.min((now-t0)/dur, 1);
+      const ease = 1-Math.pow(1-p, 3);
+      silEl.textContent = Math.floor(ease*target).toLocaleString();
+      if(p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+}, {threshold:.5}).observe(silEl);
+</script>
+<a class="kolo-home-link" href="https://moeessah.github.io/kolo/" aria-label="Kolo index"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 10.8 12 3.8l8.5 7v9.4a.8.8 0 0 1-.8.8h-5.2v-6.2h-5V21H4.3a.8.8 0 0 1-.8-.8v-9.4Z" stroke-width="1.8" stroke-linejoin="round"/></svg></a>
+</body>
+</html>
