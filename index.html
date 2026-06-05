@@ -7,7 +7,7 @@
 <link rel="icon" href="favicon-main.svg" type="image/svg+xml"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,300;1,9..40,700&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -29,12 +29,13 @@
   --w10:rgba(255,255,255,.1);
   --w05:rgba(255,255,255,.05);
   --w02:rgba(255,255,255,.025);
+  --serif:"DM Serif Display",Georgia,serif;
   --sans:"DM Sans",system-ui,sans-serif;
   --mono:"DM Mono",monospace;
   --ease:cubic-bezier(.16,1,.3,1)
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
 .wrap{max-width:1160px;margin:0 auto;padding:0 3rem}
@@ -49,19 +50,19 @@ nav{position:sticky;top:0;z-index:200;background:rgba(6,15,29,.94);backdrop-filt
 .nav-links{display:flex;align-items:center;gap:.15rem;flex:0 0 auto;justify-content:center}
 .nav-link{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);text-decoration:none;padding:.4rem .85rem;border-radius:3px;transition:color .15s,background .15s}
 .nav-link:hover{color:var(--w);background:rgba(255,255,255,.07)}
-.hero{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:48px;align-items:end;padding:70px 0 42px;border-bottom:1px solid var(--line)}
-.hero-kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--olive);margin-bottom:18px}
-h1{max-width:860px;font-size:clamp(54px,8vw,106px);line-height:.87;letter-spacing:-.07em;font-weight:800}
-.hero-copy{max-width:650px;margin-top:26px;color:var(--muted);font-size:16px;line-height:1.8}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:48px;align-items:end;padding:2.5rem 0 2rem;border-bottom:1px solid var(--line)}
+.hero-kicker{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:.55rem}
+h1{max-width:780px;font-family:var(--serif);font-size:clamp(2.8rem,5.5vw,5rem);font-weight:400;line-height:.9;letter-spacing:-.02em}
+.hero-copy{max-width:520px;margin-top:1.15rem;color:var(--w70);font-size:.78rem;font-weight:300;line-height:1.65}
 .hero-note{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;gap:28px;padding:22px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.02));border-radius:8px}
-.note-label{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--soft)}
+.note-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--w30)}
 .note-count{display:flex;align-items:baseline;gap:10px}
-.note-count strong{font-size:76px;line-height:.85;letter-spacing:-.08em;color:var(--ink)}
-.note-count span{font-family:var(--mono);font-size:11px;color:var(--olive);letter-spacing:.12em;text-transform:uppercase}
+.note-count strong{font-family:var(--serif);font-size:5rem;font-weight:400;font-style:italic;line-height:.85;letter-spacing:-.02em;color:var(--ink)}
+.note-count span{font-family:var(--mono);font-size:.6rem;color:var(--lime);letter-spacing:.14em;text-transform:uppercase}
 .note-line{height:1px;background:linear-gradient(90deg,var(--orange),transparent)}
-.section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;padding:42px 0 18px}
-.section-head h2{font-size:clamp(28px,4vw,48px);line-height:1;letter-spacing:-.055em}
-.section-head p{max-width:430px;color:var(--muted)}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;padding:2.6rem 0 1.1rem}
+.section-head h2{font-family:var(--serif);font-size:clamp(2rem,4vw,3.4rem);font-weight:400;line-height:.95;letter-spacing:-.02em}
+.section-head p{max-width:360px;color:var(--w70);font-size:.78rem;font-weight:300;line-height:1.65}
 .design-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:2px;padding:2px;background:rgba(255,255,255,.045);margin-bottom:54px}
 .design-card{position:relative;min-height:390px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;background:var(--panel);border:1px solid rgba(255,255,255,.045);isolation:isolate;transition:transform .28s var(--ease),border-color .28s var(--ease)}
 .design-card:hover{transform:translateY(-3px);border-color:var(--accent)}
@@ -71,23 +72,22 @@ h1{max-width:860px;font-size:clamp(54px,8vw,106px);line-height:.87;letter-spacin
 .design-card.dark img{opacity:.78;filter:saturate(1.05) contrast(1.08)}
 .design-card.orange img{opacity:.74}
 .card-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px}
-.badge{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);padding:7px 9px;border:1px solid color-mix(in srgb,var(--accent) 42%,transparent);background:rgba(0,0,0,.22)}
-.card-num{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.42)}
+.badge{font-family:var(--mono);font-size:.5rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);padding:7px 9px;border:1px solid color-mix(in srgb,var(--accent) 42%,transparent);background:rgba(0,0,0,.22)}
+.card-num{font-family:var(--serif);font-size:5rem;font-style:italic;line-height:1;color:var(--w);opacity:.08}
 .card-body{padding:22px}
-.card-body h3{max-width:580px;font-size:clamp(32px,4.8vw,64px);line-height:.94;letter-spacing:-.06em;margin-bottom:16px}
-.design-card:not(.featured) .card-body h3{font-size:clamp(28px,3.5vw,42px)}
-.card-body p{max-width:520px;color:rgba(255,255,255,.72);font-size:15px;line-height:1.7;margin-bottom:22px}
-.card-cta{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#fff}
+.card-body h3{max-width:580px;font-family:var(--serif);font-size:clamp(1.5rem,2.8vw,2.6rem);font-weight:400;line-height:.95;letter-spacing:-.02em;margin-bottom:.6rem}
+.card-body p{max-width:420px;color:var(--w70);font-size:.75rem;font-weight:300;line-height:1.65;margin-bottom:1.35rem}
+.card-cta{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:#fff}
 .card-cta span{display:grid;place-items:center;width:28px;height:28px;border:1px solid color-mix(in srgb,var(--accent) 54%,transparent);border-radius:50%;color:var(--accent);background:rgba(0,0,0,.22)}
 .mood-row{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:-28px 0 64px;background:rgba(255,255,255,.045);padding:2px}
 .mood{min-height:118px;padding:18px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.035)}
-.mood b{display:block;margin-bottom:16px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
-.mood span{display:block;color:var(--muted);line-height:1.7}
+.mood b{display:block;margin-bottom:16px;font-family:var(--mono);font-size:.5rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.mood span{display:block;color:var(--w70);font-size:.75rem;font-weight:300;line-height:1.65}
 footer{background:var(--bg2);border-top:1px solid var(--w05);padding:1.5rem 0}
 .foot{display:flex;align-items:center;justify-content:space-between;gap:1rem;color:var(--w30);font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;position:relative}
 .foot span:first-child{transform:translateX(-40px)}
 @media(max-width:860px){.nav-links{display:none}.hero{grid-template-columns:1fr;padding-top:48px}.hero-note{max-width:420px}.design-grid,.mood-row{grid-template-columns:1fr}.design-card.featured{min-height:480px}.design-card{min-height:410px}}
-@media(max-width:560px){.wrap,.w{padding:0 1.5rem}.foot span:first-child{transform:none}h1{font-size:clamp(46px,18vw,72px)}.section-head{display:block}.section-head p{margin-top:14px}.card-top,.card-body{padding:18px}}
+@media(max-width:560px){.wrap,.w{padding:0 1.5rem}.foot span:first-child{transform:none}h1{font-size:clamp(2.8rem,16vw,4.5rem)}.section-head{display:block}.section-head p{margin-top:14px}.card-top,.card-body{padding:18px}}
 </style>
 </head>
 <body>
@@ -108,19 +108,17 @@ footer{background:var(--bg2);border-top:1px solid var(--w05);padding:1.5rem 0}
     <div>
       <p class="hero-kicker">Kolo homepage concepts</p>
       <h1>Three homepage directions for Kolo.</h1>
-      <p class="hero-copy">I created three possible first impressions for Kolo: a clear product-led page, a sharper market-signal page, and a warmer investor-facing page. The aim is to make the first version of the brand feel considered, specific, and ready to build on.</p>
+      <p class="hero-copy">Three possible first impressions for Kolo: a clear product-led page, a sharper market-signal page, and a warmer investor-facing page. The aim is to make the first version of the brand feel considered, specific, and ready to build on.</p>
     </div>
     <aside class="hero-note" aria-label="Kolo design summary">
       <p class="note-label">Built concepts</p>
       <div class="note-count"><strong>3</strong><span>design<br/>directions</span></div>
       <div class="note-line"></div>
-      <p class="note-label">Three clickable directions, each with its own positioning angle.</p>
     </aside>
   </section>
   <section id="designs" aria-label="Homepage designs">
     <div class="section-head">
       <h2>Compare the routes.</h2>
-      <p>The layouts test three ways to introduce Kolo: explain the product fast, make market intelligence feel sharper, or build trust with long-term investors.</p>
     </div>
     <div class="design-grid">
       <a class="design-card featured" href="olive/olive.html" style="--accent:var(--olive)">
