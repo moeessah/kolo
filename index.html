@@ -23,6 +23,7 @@
   --orange:#f15a24;
   --warm:#d8793a;
   --lime:#c6f135;
+  --purple:#b388ff;
   --w:#ffffff;
   --w70:rgba(255,255,255,.7);
   --w30:rgba(255,255,255,.3);
@@ -68,7 +69,10 @@ h1{max-width:780px;font-family:var(--serif);font-size:clamp(2.8rem,5.5vw,5rem);f
 .design-card:hover{transform:translateY(-3px);border-color:var(--accent)}
 .design-card.featured{min-height:560px;grid-row:span 2}
 .design-card::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.74));z-index:-1}
-.design-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.72;z-index:-2;filter:saturate(.92)}
+.design-card::after{content:"";position:absolute;inset:0;background:var(--accent);opacity:0;mix-blend-mode:color;z-index:-1;transition:opacity .32s var(--ease);pointer-events:none}
+.design-card:hover::after{opacity:.86}
+.design-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.72;z-index:-2;filter:saturate(.92);transition:filter .32s var(--ease),opacity .32s var(--ease),transform .5s var(--ease)}
+.design-card:hover img{opacity:.82;filter:grayscale(1) contrast(1.08) brightness(.92);transform:scale(1.025)}
 .design-card.dark img{opacity:.78;filter:saturate(1.05) contrast(1.08)}
 .design-card.orange img{opacity:.74}
 .card-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px}
@@ -130,7 +134,7 @@ footer{background:var(--bg2);border-top:1px solid var(--w05);padding:1.5rem 0}
           <span class="card-cta">View page <span>-></span></span>
         </div>
       </a>
-      <a class="design-card dark" href="dark/dark.html" style="--accent:var(--deep)">
+      <a class="design-card dark" href="dark/dark.html" style="--accent:var(--purple)">
         <img src="dark/assets/earth-horizon-data-beams.png" alt="Dark earth horizon preview from the Kolo market noise homepage"/>
         <div class="card-top"><span class="badge">Market-signal route</span><span class="card-num">02</span></div>
         <div class="card-body">
