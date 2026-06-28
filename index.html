@@ -51,16 +51,10 @@ nav{position:sticky;top:0;z-index:200;background:rgba(6,15,29,.94);backdrop-filt
 .nav-links{display:flex;align-items:center;gap:.15rem;flex:0 0 auto;justify-content:center}
 .nav-link{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);text-decoration:none;padding:.4rem .85rem;border-radius:3px;transition:color .15s,background .15s}
 .nav-link:hover{color:var(--w);background:rgba(255,255,255,.07)}
-.hero{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:48px;align-items:end;padding:2.5rem 0 2rem;border-bottom:1px solid var(--line)}
+.hero{display:block;padding:2.5rem 0 2rem;border-bottom:1px solid var(--line)}
 .hero-kicker{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:.55rem}
 h1{max-width:780px;font-family:var(--serif);font-size:clamp(2.8rem,5.5vw,5rem);font-weight:400;line-height:.9;letter-spacing:-.02em}
 .hero-copy{max-width:520px;margin-top:1.15rem;color:var(--w70);font-size:.78rem;font-weight:300;line-height:1.65}
-.hero-note{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;gap:28px;padding:22px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.02));border-radius:8px}
-.note-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--w30)}
-.note-count{display:flex;align-items:baseline;gap:10px}
-.note-count strong{font-family:var(--serif);font-size:5rem;font-weight:400;font-style:italic;line-height:.85;letter-spacing:-.02em;color:var(--ink)}
-.note-count span{font-family:var(--mono);font-size:.6rem;color:var(--lime);letter-spacing:.14em;text-transform:uppercase}
-.note-line{height:1px;background:linear-gradient(90deg,var(--orange),transparent)}
 .section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;padding:2.6rem 0 1.1rem}
 .section-head h2{font-family:var(--serif);font-size:clamp(2rem,4vw,3.4rem);font-weight:400;line-height:.95;letter-spacing:-.02em}
 .section-head p{max-width:360px;color:var(--w70);font-size:.78rem;font-weight:300;line-height:1.65}
@@ -90,7 +84,7 @@ h1{max-width:780px;font-family:var(--serif);font-size:clamp(2.8rem,5.5vw,5rem);f
 footer{background:var(--bg2);border-top:1px solid var(--w05);padding:1.5rem 0}
 .foot{display:flex;align-items:center;justify-content:space-between;gap:1rem;color:var(--w30);font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;position:relative}
 .foot span:first-child{transform:translateX(-40px)}
-@media(max-width:860px){.nav-links{display:none}.hero{grid-template-columns:1fr;padding-top:48px}.hero-note{max-width:420px}.design-grid,.mood-row{grid-template-columns:1fr}.design-card.featured{min-height:480px}.design-card{min-height:410px}}
+@media(max-width:860px){.nav-links{display:none}.hero{padding-top:48px}.design-grid,.mood-row{grid-template-columns:1fr}.design-card.featured{min-height:480px}.design-card{min-height:410px}}
 @media(max-width:560px){.wrap,.w{padding:0 1.5rem}.foot span:first-child{transform:none}h1{font-size:clamp(2.8rem,16vw,4.5rem)}.section-head{display:block}.section-head p{margin-top:14px}.card-top,.card-body{padding:18px}}
 </style>
 </head>
@@ -114,11 +108,6 @@ footer{background:var(--bg2);border-top:1px solid var(--w05);padding:1.5rem 0}
       <h1>Three homepage directions for Kolo.</h1>
       <p class="hero-copy">Three possible first impressions for Kolo: a clear product-led page, a sharper market-signal page, and a warmer investor-facing page.</p>
     </div>
-    <aside class="hero-note" aria-label="Kolo design summary">
-      <p class="note-label">Built concepts</p>
-      <div class="note-count"><strong>3</strong><span>design<br/>directions</span></div>
-      <div class="note-line"></div>
-    </aside>
   </section>
   <section id="designs" aria-label="Homepage designs">
     <div class="section-head">
