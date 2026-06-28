@@ -979,10 +979,6 @@ footer { background: #050b12; border-top: 1px solid var(--border); }
   padding-bottom: 98px;
 }
 
-.kolo-home-link{position:fixed;right:18px;bottom:18px;z-index:10000;display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;padding:0;border:1px solid rgba(180,240,50,.34);border-radius:999px;background:rgba(8,10,12,.62);color:var(--lime);text-decoration:none;box-shadow:0 18px 46px rgba(0,0,0,.32);backdrop-filter:blur(14px);transition:transform .2s,border-color .2s,background .2s}
-.kolo-home-link svg{width:19px;height:19px;stroke:currentColor}
-.kolo-home-link:hover{transform:translateY(-2px);border-color:rgba(180,240,50,.65);background:rgba(8,10,12,.84)}
-@media(max-width:560px){.kolo-home-link{right:12px;bottom:12px}}
 
 /* User requested nav/logo and Intelligence layering fixes */
 .n-logo {
@@ -1018,7 +1014,7 @@ footer { background: #050b12; border-top: 1px solid var(--border); }
 
 <!-- NAV -->
 <nav id="nav">
-  <a class="n-logo" href="https://moeessah.github.io/kolo/" aria-label="Kolo home">KOLO</a>
+  <a class="n-logo" href="../index.html" aria-label="Kolo home">KOLO</a>
   <div class="n-links">
     <a href="#">This Week</a>
     <a href="#">Portfolio Watch</a>
@@ -1448,6 +1444,6 @@ new IntersectionObserver(([e]) => {
   }
 }, {threshold:.5}).observe(silEl);
 </script>
-<a class="kolo-home-link" href="https://moeessah.github.io/kolo/" aria-label="Kolo index"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 10.8 12 3.8l8.5 7v9.4a.8.8 0 0 1-.8.8h-5.2v-6.2h-5V21H4.3a.8.8 0 0 1-.8-.8v-9.4Z" stroke-width="1.8" stroke-linejoin="round"/></svg></a>
+
 </body>
 </html>
